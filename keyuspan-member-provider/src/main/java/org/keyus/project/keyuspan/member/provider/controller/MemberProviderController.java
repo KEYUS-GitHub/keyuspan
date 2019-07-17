@@ -2,9 +2,7 @@ package org.keyus.project.keyuspan.member.provider.controller;
 
 import org.keyus.project.keyuspan.api.pojo.Member;
 import org.keyus.project.keyuspan.member.provider.service.MemberService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +23,10 @@ public class MemberProviderController {
     @GetMapping("/members")
     public List<Member> getMembers() {
         return memberService.getMembers();
+    }
+
+    @PostMapping("/save")
+    public Member saveMember(@RequestBody Member member) {
+        return memberService.save(member);
     }
 }

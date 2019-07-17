@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface MemberDao extends JpaRepository<Member, Long> {
 
     @Override
-    Optional<Member> findById(Long aLong);
+    Optional<Member> findById(Long id);
 
     @Override
     List<Member> findAll();

@@ -1,8 +1,7 @@
 package org.keyus.project.keyuspan.member.consumer.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.keyus.project.keyuspan.api.pojo.Member;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -26,5 +25,10 @@ public class MemberConsumerController {
     @GetMapping("/members")
     public List getMembers() {
         return restTemplate.getForObject(MEMBER_REST_URL_PREFIX + "/member/members", List.class);
+    }
+
+    @PostMapping("/register")
+    public Member register(Member member) {
+        return restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/member/save", member, Member.class);
     }
 }
