@@ -19,6 +19,9 @@ public interface MemberDao extends JpaRepository<Member, Long> {
     Optional<Member> findById(Long id);
 
     @Override
+    <S extends Member> Optional<S> findOne(Example<S> example);
+
+    @Override
     List<Member> findAll();
 
     @Override

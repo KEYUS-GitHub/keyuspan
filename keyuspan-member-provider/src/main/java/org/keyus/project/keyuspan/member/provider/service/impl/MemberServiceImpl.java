@@ -3,9 +3,11 @@ package org.keyus.project.keyuspan.member.provider.service.impl;
 import org.keyus.project.keyuspan.api.pojo.Member;
 import org.keyus.project.keyuspan.member.provider.dao.MemberDao;
 import org.keyus.project.keyuspan.member.provider.service.MemberService;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author keyus
@@ -26,7 +28,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member save(Member member) {
-        return memberDao.save(member);
+    public <S extends Member> S save(S entity) {
+        return memberDao.save(entity);
+    }
+
+    @Override
+    public <S extends Member> Optional<S> findOne(Example<S> example) {
+        return memberDao.findOne(example);
     }
 }

@@ -10,6 +10,7 @@
         <module>keyuspan-eureka</module>
         <module>keyuspan-member-provider</module>
         <module>keyuspan-member-consumer</module>
+        <module>keyuspan-mail</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -55,6 +56,12 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>28.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
