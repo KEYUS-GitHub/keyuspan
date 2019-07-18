@@ -38,6 +38,11 @@ public class ServerResponse<T> implements Serializable {
         return response != null && response.status != ResponseCode.ERROR.getCode();
     }
 
+    // 响应是null，或者ResponseCode是error，都视为error
+    public static boolean isError(ServerResponse response) {
+        return response == null || response.status == ResponseCode.ERROR.getCode();
+    }
+
     public static boolean isNullValue(ServerResponse response) {
         return response != null && response.status == ResponseCode.NULL_VALUE.getCode();
     }

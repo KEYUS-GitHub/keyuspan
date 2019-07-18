@@ -11,6 +11,7 @@
         <module>keyuspan-member-provider</module>
         <module>keyuspan-member-consumer</module>
         <module>keyuspan-mail</module>
+        <module>keyuspan-common-provider</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

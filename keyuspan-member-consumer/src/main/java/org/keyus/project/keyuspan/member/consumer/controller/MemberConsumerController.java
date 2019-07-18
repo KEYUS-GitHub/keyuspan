@@ -2,6 +2,7 @@ package org.keyus.project.keyuspan.member.consumer.controller;
 
 import org.keyus.project.keyuspan.api.pojo.Member;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
+import org.keyus.project.keyuspan.api.util.VerificationCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/consumer/member")
 public class MemberConsumerController {
 
+    private static final String COMMON_REST_URL_PREFIX = "http://keyuspan-common-provider";
     private static final String MEMBER_REST_URL_PREFIX = "http://keyuspan-member-provider";
 
     private final RestTemplate restTemplate;
@@ -34,8 +36,17 @@ public class MemberConsumerController {
     }
 
     @PostMapping("/login")
-    public ServerResponse login(HttpSession session, Member member) {
-        ServerResponse response = restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/member/find_one", member, ServerResponse.class);
+    public ServerResponse login(HttpSession session, Member member, @RequestParam("key") String key, @RequestParam("answer") String answer) {
+        // 校验验证码是否正确
+        ServerResponse response = restTemplate.postForObject(COMMON_REST_URL_PREFIX + "/common/check_verification_code",
+                VerificationCode.create(key, answer), ServerResponse.class);
+        // 如果验证码未校验成功，
+        if (ServerResponse.isError(response)) {
+            return response;
+        }
+
+        // 否则，查找用户名与密码匹配的记录
+        response = restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/member/find_one", member, ServerResponse.class);
         if (ServerResponse.isSuccess(response)) {
             // 用户名或密码错误，查无此记录，故而登录失败
             if (ServerResponse.isNullValue(response)) {

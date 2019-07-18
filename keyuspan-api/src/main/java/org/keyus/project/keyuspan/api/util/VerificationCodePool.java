@@ -33,13 +33,13 @@ public class VerificationCodePool {
         return builder.toString();
     }
 
-    public String getVerifyCode(String key) {
-        String verifyCode = generateVerifyCode();
-        POOL.put(key, verifyCode);
-        return verifyCode;
+    public VerificationCode createVerifyCode(String key) {
+        String answer = generateVerifyCode();
+        POOL.put(key, answer);
+        return new VerificationCode(key, answer);
     }
 
-    public boolean check(String key, String answer) {
-        return Objects.equals(POOL.get(key), answer);
+    public boolean check(VerificationCode verificationCode) {
+        return Objects.equals(POOL.get(verificationCode.getKey()), verificationCode.getAnswer());
     }
 }
