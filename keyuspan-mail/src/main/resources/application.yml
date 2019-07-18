@@ -7,8 +7,8 @@ spring:
 
   mail:
     host: smtp.sina.com
-    username: keyus_mail@sina.com
-    password: mailmail_keyus
+    username: xxx@xx.com
+    password: xxx
     protocol: smtp #发送邮件协议
     default-encoding: utf-8
     properties:
