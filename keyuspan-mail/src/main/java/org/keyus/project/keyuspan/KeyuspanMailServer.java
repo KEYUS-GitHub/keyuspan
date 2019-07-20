@@ -8,9 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @create 2019-07-17  下午10:50
  */
 @SpringBootApplication
-public class KeyuspanMail {
+public class KeyuspanMailServer {
 
     public static void main(String[] args) {
-        SpringApplication.run(KeyuspanMail.class, args);
+        SpringApplication.run(KeyuspanMailServer.class, args);
     }
 }

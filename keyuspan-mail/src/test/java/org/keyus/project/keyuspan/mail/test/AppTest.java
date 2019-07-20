@@ -2,7 +2,7 @@ package org.keyus.project.keyuspan.mail.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keyus.project.keyuspan.KeyuspanMail;
+import org.keyus.project.keyuspan.KeyuspanMailServer;
 import org.keyus.project.keyuspan.mail.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @create 2019-07-17  下午11:29
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = KeyuspanMail.class)
+@SpringBootTest(classes = KeyuspanMailServer.class)
 public class AppTest {
 
     @Autowired

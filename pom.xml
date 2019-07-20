@@ -12,6 +12,7 @@
         <module>keyuspan-member-consumer</module>
         <module>keyuspan-mail</module>
         <module>keyuspan-common-provider</module>
+        <module>keyuspan-gateway</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -57,6 +58,12 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-gateway -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
+                <version>2.1.2.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
             <dependency>
@@ -122,6 +129,10 @@
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

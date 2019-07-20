@@ -1,0 +1,38 @@
+server:
+  port: 12000
+
+eureka:
+  instance:
+    instance-id: keyuspan-gateway
+    prefer-ip-address: true
+  client: # 客户端注册进eureka服务列表内
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+
+spring:
+  application:
+    name: keyuspan-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true # 启动服务名称全小写的映射方式，自动映射下的访问方式为：http://网关地址/服务名称（小写）/**
+          enabled: true # 自动映射
+#      routes:
+#        - id: member
+#          uri: lb://keyuspan-member-provider  # uri：用lb:// + eureka中注册的微服务名称
+#          predicates:
+#            - Path=/**
+#          filters:                     #filters：过滤规则
+#            - StripPrefix=1
+#        - id: api-b                # 区分不同功能
+#          uri: lb://service-demo   #lb://开头（lb代表从注册中心获取服务）服务名称
+#          predicates:
+#            - Path=/api-b/**         #去掉api-a，只保留**部分
+#          filters:
+#            - StripPrefix=1
+
+info:
+  app.name: keyuspan-gateway
+  build.artifactId: ${project.artifactId}
+  build.version: ${project.version}
