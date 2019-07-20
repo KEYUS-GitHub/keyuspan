@@ -14,7 +14,6 @@ import java.util.Optional;
  * @create 2019-07-16  下午10:17
  */
 @RestController
-@RequestMapping("/member")
 public class MemberProviderController {
 
     private final MemberService memberService;

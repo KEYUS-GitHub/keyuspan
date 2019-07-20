@@ -7,6 +7,13 @@ spring:
 
 eureka:
   client:
-    register-with-eureka: false
     service-url:
       defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: keyuspan-member-consumer
+    prefer-ip-address: true     #访问路径可以显示IP地址
+
+info:
+  app.name: keyuspan-member-consumer
+  build.artifactId: ${project.artifactId}
+  build.version: ${project.version}

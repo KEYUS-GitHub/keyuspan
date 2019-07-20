@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
  * @create 2019-07-17  下午6:22
  */
 @RestController
-@RequestMapping("/consumer/member")
 public class MemberConsumerController {
 
     private static final String COMMON_REST_URL_PREFIX = "http://keyuspan-common-provider";
@@ -27,18 +26,18 @@ public class MemberConsumerController {
 
     @GetMapping("/members")
     public ServerResponse getMembers() {
-        return restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/member/members", null, ServerResponse.class);
+        return restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/members", null, ServerResponse.class);
     }
 
     @PostMapping("/register")
     public ServerResponse register(Member member) {
-        return restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/member/save", member, ServerResponse.class);
+        return restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/save", member, ServerResponse.class);
     }
 
     @PostMapping("/login")
     public ServerResponse login(HttpSession session, Member member, @RequestParam("key") String key, @RequestParam("answer") String answer) {
         // 校验验证码是否正确
-        ServerResponse response = restTemplate.postForObject(COMMON_REST_URL_PREFIX + "/common/check_verification_code",
+        ServerResponse response = restTemplate.postForObject(COMMON_REST_URL_PREFIX + "/check_verification_code",
                 VerificationCode.create(key, answer), ServerResponse.class);
         // 如果验证码未校验成功，
         if (ServerResponse.isError(response)) {
@@ -46,7 +45,7 @@ public class MemberConsumerController {
         }
 
         // 否则，查找用户名与密码匹配的记录
-        response = restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/member/find_one", member, ServerResponse.class);
+        response = restTemplate.postForObject(MEMBER_REST_URL_PREFIX + "/find_one", member, ServerResponse.class);
         if (ServerResponse.isSuccess(response)) {
             // 用户名或密码错误，查无此记录，故而登录失败
             if (ServerResponse.isNullValue(response)) {
