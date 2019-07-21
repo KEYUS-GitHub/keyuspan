@@ -7,14 +7,14 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
  * @author keyus
- * @create 2019-07-17  下午6:14
+ * @create 2019-07-21  下午4:32
  */
 @SpringBootApplication
 @EnableEurekaClient
 @EnableDiscoveryClient
-public class KeyuspanMemberConsumer {
+public class KeyuspanCommonConsumer {
 
     public static void main(String[] args) {
-        SpringApplication.run(KeyuspanMemberConsumer.class, args);
+        SpringApplication.run(KeyuspanCommonConsumer.class, args);
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * @create 2019-07-18  下午9:43
  */
 @RestController
-public class CommonServerController {
+public class CommonProviderController {
 
     @Autowired
     private VerificationCodePool verificationCodePool;

@@ -1,4 +1,4 @@
-package org.keyus.project.keyuspan.member.consumer.config;
+package org.keyus.project.keyuspan.common.consumer.config;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author keyus
- * @create 2019-07-17  下午6:20
+ * @create 2019-07-21  下午4:35
  */
 @Configuration
 public class AppConfig {

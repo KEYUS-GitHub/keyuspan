@@ -13,6 +13,7 @@
         <module>keyuspan-mail</module>
         <module>keyuspan-common-provider</module>
         <module>keyuspan-gateway</module>
+        <module>keyuspan-common-consumer</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -30,7 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
+        <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
         <junit.version>4.12</junit.version>
         <lombok.version>1.16.18</lombok.version>
