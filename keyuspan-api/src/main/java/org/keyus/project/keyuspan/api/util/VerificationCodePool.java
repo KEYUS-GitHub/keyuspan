@@ -2,6 +2,7 @@ package org.keyus.project.keyuspan.api.util;
 
 import com.google.common.collect.Maps;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.Random;
  * @create 2019-07-18  下午4:41
  * 用于生成验证码的池子
  */
+@Slf4j
 public class VerificationCodePool {
 
     // 暂且用ConcurrentHashMap代替redis存储
@@ -36,6 +38,7 @@ public class VerificationCodePool {
     public VerificationCode createVerifyCode(String key) {
         String answer = generateVerifyCode();
         POOL.put(key, answer);
+        log.info("验证码池 ：{} key : {} answer : {}" ,VerificationCodePool.class, key, answer);
         return new VerificationCode(key, answer);
     }
 

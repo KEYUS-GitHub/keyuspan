@@ -14,6 +14,7 @@
         <module>keyuspan-common-provider</module>
         <module>keyuspan-gateway</module>
         <module>keyuspan-common-consumer</module>
+        <module>keyuspan-file-provider</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -107,6 +108,11 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>com.github.tobato</groupId>
+                <artifactId>fastdfs-client</artifactId>
+                <version>1.26.6</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -118,12 +124,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
