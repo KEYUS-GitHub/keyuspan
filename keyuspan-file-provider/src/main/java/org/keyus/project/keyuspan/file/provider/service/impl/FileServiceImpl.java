@@ -41,7 +41,7 @@ public class FileServiceImpl implements FileService {
      * @throws IOException
      */
     public String uploadFile(MultipartFile file) throws IOException {
-        StorePath storePath = storageClient.uploadFile(file.getInputStream(),file.getSize(), FilenameUtils.getExtension(file.getOriginalFilename()),null);
+        StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), FilenameUtils.getExtension(file.getOriginalFilename()),null);
         return getResAccessUrl(storePath);
     }
 
@@ -53,7 +53,7 @@ public class FileServiceImpl implements FileService {
      */
     public String uploadFile(File file) throws IOException {
         FileInputStream inputStream = new FileInputStream (file);
-        StorePath storePath = storageClient.uploadFile(inputStream,file.length(), FilenameUtils.getExtension(file.getName()),null);
+        StorePath storePath = storageClient.uploadFile(inputStream, file.length(), FilenameUtils.getExtension(file.getName()),null);
         return getResAccessUrl(storePath);
     }
 
@@ -66,13 +66,13 @@ public class FileServiceImpl implements FileService {
     public String uploadFile(String content, String fileExtension) {
         byte[] buff = content.getBytes(Charset.forName("UTF-8"));
         ByteArrayInputStream stream = new ByteArrayInputStream(buff);
-        StorePath storePath = storageClient.uploadFile(stream,buff.length, fileExtension,null);
+        StorePath storePath = storageClient.uploadFile(stream, buff.length, fileExtension,null);
         return getResAccessUrl(storePath);
     }
 
     // 封装图片完整URL地址
     private String getResAccessUrl(StorePath storePath) {
-        return fdfsWebServer.getWebServerUrl() + storePath.getFullPath();
+        return fdfsWebServer.getWebServerUrl() + '/' + storePath.getFullPath();
     }
 
     /**

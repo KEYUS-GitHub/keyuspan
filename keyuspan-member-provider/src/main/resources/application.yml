@@ -26,6 +26,11 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
 
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 3000
+
 eureka:
   client: # 客户端注册进eureka服务列表内
     service-url:
@@ -34,6 +39,7 @@ eureka:
   instance:
     instance-id: keyuspan-member-provider
     prefer-ip-address: true     #访问路径可以显示IP地址
+
 
 #mybatis:
 #  config-location: classpath:mybatis/mybatis-config.xml        # mybatis配置文件所在路径

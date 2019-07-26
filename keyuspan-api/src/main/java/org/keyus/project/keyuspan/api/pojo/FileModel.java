@@ -1,6 +1,8 @@
 package org.keyus.project.keyuspan.api.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +13,8 @@ import java.util.Date;
  * @create 2019-07-22  下午4:04
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "file_model")
 public class FileModel implements Serializable {
 
@@ -30,7 +34,7 @@ public class FileModel implements Serializable {
     @Column(name = "file_name")
     private String fileName;
 
-    // 文件扩展名（含.）
+    // 文件扩展名（名字不含.）
     @Column(name = "file_extension")
     private String fileExtension;
 
@@ -39,10 +43,10 @@ public class FileModel implements Serializable {
     private String uri;
 
     // 文件的类型（图片或视频等......）
-    @Column(name = "file_type")
-    private Integer fileType;
+    @Column(name = "content_type")
+    private String contentType;
 
-    // 文件的大小（单位是MB）
+    // 文件的大小（单位是KB）
     @Column(name = "size")
     private Double size;
 

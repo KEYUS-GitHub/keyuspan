@@ -1,8 +1,15 @@
 package org.keyus.project.keyuspan.file.provider.service.impl;
 
+import org.keyus.project.keyuspan.api.pojo.FileModel;
 import org.keyus.project.keyuspan.file.provider.dao.FileModelDao;
 import org.keyus.project.keyuspan.file.provider.service.FileModelService;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author keyus
@@ -17,5 +24,34 @@ public class FileModelServiceImpl implements FileModelService {
         this.fileModelDao = fileModelDao;
     }
 
-    
+
+    @Override
+    public Optional<FileModel> findById(Long id) {
+        return fileModelDao.findById(id);
+    }
+
+    @Override
+    public <S extends FileModel> Page<S> findAll(Example<S> example, Pageable pageable) {
+        return fileModelDao.findAll(example, pageable);
+    }
+
+    @Override
+    public <S extends FileModel> S save(S s) {
+        return fileModelDao.save(s);
+    }
+
+    @Override
+    public <S extends FileModel> List<S> saveAll(Iterable<S> iterable) {
+        return fileModelDao.saveAll(iterable);
+    }
+
+    @Override
+    public void delete(FileModel fileModel) {
+        fileModelDao.delete(fileModel);
+    }
+
+    @Override
+    public void deleteAll(Iterable<? extends FileModel> iterable) {
+        fileModelDao.deleteAll(iterable);
+    }
 }
