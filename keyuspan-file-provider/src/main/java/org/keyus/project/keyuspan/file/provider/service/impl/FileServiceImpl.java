@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * @author keyus
@@ -43,6 +44,23 @@ public class FileServiceImpl implements FileService {
     public String uploadFile(MultipartFile file) throws IOException {
         StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), FilenameUtils.getExtension(file.getOriginalFilename()),null);
         return getResAccessUrl(storePath);
+    }
+
+    /**
+     * 上传文件
+     * @param files 文件对象的集合集合
+     * @return 文件访问地址的集合
+     * @throws IOException
+     */
+    public String[] uploadFiles(List<MultipartFile> files) throws IOException {
+        int size = files.size();
+        String[] uris = new String[size];
+        for (int i = 0; i < size; i++) {
+            MultipartFile file = files.get(i);
+            StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), FilenameUtils.getExtension(file.getOriginalFilename()),null);
+            uris[i] = getResAccessUrl(storePath);
+        }
+        return uris;
     }
 
     /**

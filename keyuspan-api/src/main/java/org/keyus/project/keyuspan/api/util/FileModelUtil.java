@@ -4,7 +4,9 @@ import org.keyus.project.keyuspan.api.pojo.FileModel;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author keyus
@@ -29,6 +31,19 @@ public class FileModelUtil {
         fileModel.setDateOfRecovery(null);
         fileModel.setUri(uri);
         return fileModel;
+    }
+
+    public static List<FileModel> changeToFileModels (Long memberId, List<MultipartFile> files, String[] uris) throws Exception {
+        if (files.size() != uris.length) {
+            throw new Exception("上传文件时系统出错");
+        }
+        List<FileModel> res = new ArrayList<>();
+        int size = uris.length;
+        for (int i = 0; i < size; i++) {
+            FileModel fileModel = FileModelUtil.changeToFileModel(memberId, files.get(i), uris[i]);
+            res.add(fileModel);
+        }
+        return res;
     }
 }
 
