@@ -51,5 +51,4 @@ public class FileModelProviderController {
         List<FileModel> saveAll = fileModelService.saveAll(fileModels);
         return ServerResponse.createBySuccessWithData(saveAll);
     }
-
 }

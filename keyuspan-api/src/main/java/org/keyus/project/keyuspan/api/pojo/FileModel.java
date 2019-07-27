@@ -30,6 +30,10 @@ public class FileModel implements Serializable {
     @Column(name = "member_id")
     private Long memberId;
 
+    // 该文件所在的虚拟文件夹ID
+    @Column(name = "file_folder_id")
+    private Long fileFolderId;
+
     // 文件名（包含扩展名）
     @Column(name = "file_name")
     private String fileName;
@@ -61,5 +65,4 @@ public class FileModel implements Serializable {
     // 是否被删除
     @Column(name = "deleted")
     private Boolean deleted;
-
 }

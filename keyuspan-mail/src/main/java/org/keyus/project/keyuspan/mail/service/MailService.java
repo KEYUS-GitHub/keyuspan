@@ -1,7 +1,6 @@
 package org.keyus.project.keyuspan.mail.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,10 +16,9 @@ import java.io.File;
  * @author keyus
  * @create 2019-07-17  下午11:18
  */
+@Slf4j
 @Service
 public class MailService {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final JavaMailSender sender;
 
@@ -39,9 +37,9 @@ public class MailService {
         simpleMailMessage.setText(content);
         try {
             sender.send(simpleMailMessage);
-            logger.info("发送给" + toMail + "简单邮件已经发送。 subject：" + subject);
+            log.info("发送给" + toMail + "简单邮件已经发送。 subject：" + subject);
         } catch (Exception e){
-            logger.info("发送给" + toMail + "send mail error subject：" + subject);
+            log.info("发送给" + toMail + "send mail error subject：" + subject);
             e.printStackTrace();
         }
     }
@@ -55,9 +53,9 @@ public class MailService {
             mimeMessageHelper.setText(content,true);
             mimeMessageHelper.setSubject(subject);
             sender.send(mimeMessage);
-            logger.info("发送给" + toMail + "html邮件已经发送。 subject：" + subject);
+            log.info("发送给" + toMail + "html邮件已经发送。 subject：" + subject);
         } catch (MessagingException e) {
-            logger.info("发送给" + toMail + "html send mail error subject：" + subject);
+            log.info("发送给" + toMail + "html send mail error subject：" + subject);
             e.printStackTrace();
         }
     }
@@ -75,10 +73,10 @@ public class MailService {
             String fileName = filePath.substring(filePath.lastIndexOf("/"));
             helper.addAttachment(fileName, file);
             sender.send(message);
-            logger.info("发送给"+toMail+"带附件的邮件已经发送。");
+            log.info("发送给"+toMail+"带附件的邮件已经发送。");
         } catch (MessagingException e) {
             e.printStackTrace();
-            logger.error("发送给"+toMail+"带附件的邮件时发生异常！", e);
+            log.error("发送给"+toMail+"带附件的邮件时发生异常！", e);
         }
     }
 }
