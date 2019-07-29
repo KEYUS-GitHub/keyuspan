@@ -3,7 +3,6 @@ package org.keyus.project.keyuspan.api.service.file;
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +19,10 @@ import java.util.List;
 public interface FileClientService {
 
     @PostMapping("/upload_file")
-    ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, HttpSession session) throws IOException;
+    ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, @RequestParam("id") Long id, HttpSession session) throws IOException;
 
     @PostMapping("/upload_files")
-    ServerResponse <List<FileModel>> uploadFiles (@RequestParam("files") MultipartFile[] files, HttpSession session) throws Exception;
+    ServerResponse <List<FileModel>> uploadFiles (@RequestParam("files") MultipartFile[] files, @RequestParam("id") Long id, HttpSession session) throws Exception;
 
     @PostMapping("/get_files_by_folder_id")
     ServerResponse <List<FileModel>> getFilesByFolderId(@RequestParam("id") Long id);

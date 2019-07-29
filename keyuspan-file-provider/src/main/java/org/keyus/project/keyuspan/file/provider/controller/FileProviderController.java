@@ -8,7 +8,6 @@ import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.file.provider.service.FileModelService;
 import org.keyus.project.keyuspan.file.provider.service.FileService;
 import org.springframework.data.domain.Example;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,19 +32,21 @@ public class FileProviderController {
     private final FileService fileService;
 
     @PostMapping("/upload_file")
-    public ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
+    public ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, @RequestParam("id") Long id, HttpSession session) throws IOException {
         Member member = (Member) session.getAttribute("member");
         String uri = fileService.uploadFile(file);
+        // TODO: 19-7-29 修改整个上传逻辑，增加fileModler属性father_folder_id的数值
         FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri);
         FileModel save = fileModelService.save(fileModel);
         return ServerResponse.createBySuccessWithData(save);
     }
 
     @PostMapping("/upload_files")
-    public ServerResponse <List<FileModel>> uploadFiles (@RequestParam("files") MultipartFile[] files, HttpSession session) throws Exception {
+    public ServerResponse <List<FileModel>> uploadFiles (@RequestParam("files") MultipartFile[] files, @RequestParam("id") Long id, HttpSession session) throws Exception {
         Member member = (Member) session.getAttribute("member");
         List<MultipartFile> list = new ArrayList<>(Arrays.asList(files));
         String[] uris = fileService.uploadFiles(list);
+        // TODO: 19-7-29 修改整个上传逻辑，增加fileModler属性father_folder_id的数值
         List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris);
         List<FileModel> saveAll = fileModelService.saveAll(fileModels);
         return ServerResponse.createBySuccessWithData(saveAll);
