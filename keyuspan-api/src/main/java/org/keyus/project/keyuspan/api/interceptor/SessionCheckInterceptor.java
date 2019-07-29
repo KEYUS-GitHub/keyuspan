@@ -1,6 +1,6 @@
 package org.keyus.project.keyuspan.api.interceptor;
 
-import org.keyus.project.keyuspan.api.pojo.Member;
+import org.keyus.project.keyuspan.api.po.Member;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

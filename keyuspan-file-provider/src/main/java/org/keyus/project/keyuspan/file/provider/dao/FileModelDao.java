@@ -1,9 +1,10 @@
 package org.keyus.project.keyuspan.file.provider.dao;
 
-import org.keyus.project.keyuspan.api.pojo.FileModel;
+import org.keyus.project.keyuspan.api.po.FileModel;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
@@ -18,6 +19,18 @@ public interface FileModelDao extends JpaRepository<FileModel, Long> {
 
     @Override
     Optional<FileModel> findById(Long id);
+
+    @Override
+    List<FileModel> findAll();
+
+    @Override
+    <S extends FileModel> List<S> findAll(Example<S> example);
+
+    @Override
+    List<FileModel> findAll(Sort sort);
+
+    @Override
+    <S extends FileModel> List<S> findAll(Example<S> example, Sort sort);
 
     @Override
     <S extends FileModel> Page<S> findAll(Example<S> example, Pageable pageable);

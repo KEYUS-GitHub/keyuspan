@@ -1,11 +1,14 @@
 package org.keyus.project.keyuspan.file.provider.controller;
 
-import org.keyus.project.keyuspan.api.pojo.FileModel;
-import org.keyus.project.keyuspan.api.pojo.Member;
+import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.po.FileModel;
+import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.util.FileModelUtil;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.file.provider.service.FileModelService;
 import org.keyus.project.keyuspan.file.provider.service.FileService;
+import org.springframework.data.domain.Example;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,19 +25,15 @@ import java.util.List;
  * @create 2019-07-25  下午2:13
  */
 @RestController
-public class FileModelProviderController {
+@AllArgsConstructor
+public class FileProviderController {
 
     private final FileModelService fileModelService;
 
     private final FileService fileService;
 
-    public FileModelProviderController (FileModelService fileModelService, FileService fileService) {
-        this.fileModelService = fileModelService;
-        this.fileService = fileService;
-    }
-
     @PostMapping("/upload_file")
-    public ServerResponse uploadFile (@RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
+    public ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
         Member member = (Member) session.getAttribute("member");
         String uri = fileService.uploadFile(file);
         FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri);
@@ -43,12 +42,19 @@ public class FileModelProviderController {
     }
 
     @PostMapping("/upload_files")
-    public ServerResponse uploadFiles (@RequestParam("files") MultipartFile[] files, HttpSession session) throws Exception {
+    public ServerResponse <List<FileModel>> uploadFiles (@RequestParam("files") MultipartFile[] files, HttpSession session) throws Exception {
         Member member = (Member) session.getAttribute("member");
         List<MultipartFile> list = new ArrayList<>(Arrays.asList(files));
         String[] uris = fileService.uploadFiles(list);
         List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris);
         List<FileModel> saveAll = fileModelService.saveAll(fileModels);
         return ServerResponse.createBySuccessWithData(saveAll);
+    }
+
+    @PostMapping("/get_files_by_folder_id")
+    public ServerResponse <List<FileModel>> getFilesByFolderId(@RequestParam("id") Long id) {
+        FileModel fileModel = new FileModel();
+        fileModel.setFileFolderId(id);
+        return ServerResponse.createBySuccessWithData(fileModelService.findAll(Example.of(fileModel)));
     }
 }

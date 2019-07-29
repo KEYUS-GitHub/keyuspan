@@ -1,9 +1,10 @@
 package org.keyus.project.keyuspan.file.provider.service;
 
-import org.keyus.project.keyuspan.api.pojo.FileModel;
+import org.keyus.project.keyuspan.api.po.FileModel;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,14 @@ import java.util.Optional;
 public interface FileModelService {
 
     Optional<FileModel> findById(Long id);
+
+    List<FileModel> findAll();
+
+    <S extends FileModel> List<S> findAll(Example<S> example);
+
+    List<FileModel> findAll(Sort sort);
+
+    <S extends FileModel> List<S> findAll(Example<S> example, Sort sort);
 
     <S extends FileModel> Page<S> findAll(Example<S> example, Pageable pageable);
 

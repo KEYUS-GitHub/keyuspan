@@ -9,7 +9,7 @@ import lombok.Getter;
  * @create 2019-07-18  上午7:22
  */
 @AllArgsConstructor
-public enum  ResponseCode {
+public enum ResponseCodeEnum {
 
     // 普通的success
     SUCCESS(0,"SUCCESS"),

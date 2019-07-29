@@ -2,9 +2,8 @@ package org.keyus.project.keyuspan.member.provider.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keyus.project.keyuspan.api.pojo.Member;
+import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.member.provider.dao.MemberDao;
-import org.keyus.project.keyuspan.member.provider.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;

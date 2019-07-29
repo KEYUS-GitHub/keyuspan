@@ -1,4 +1,4 @@
-package org.keyus.project.keyuspan.api.pojo;
+package org.keyus.project.keyuspan.api.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

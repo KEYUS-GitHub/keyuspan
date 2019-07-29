@@ -1,6 +1,6 @@
 package org.keyus.project.keyuspan.member.provider.dao;
 
-import org.keyus.project.keyuspan.api.pojo.Member;
+import org.keyus.project.keyuspan.api.po.Member;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

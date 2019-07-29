@@ -1,6 +1,6 @@
 package org.keyus.project.keyuspan.api.util;
 
-import org.keyus.project.keyuspan.api.pojo.FileModel;
+import org.keyus.project.keyuspan.api.po.FileModel;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
 

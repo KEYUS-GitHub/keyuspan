@@ -1,6 +1,6 @@
 package org.keyus.project.keyuspan.member.provider.service.impl;
 
-import org.keyus.project.keyuspan.api.pojo.Member;
+import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.member.provider.dao.MemberDao;
 import org.keyus.project.keyuspan.member.provider.service.MemberService;
 import org.springframework.data.domain.Example;

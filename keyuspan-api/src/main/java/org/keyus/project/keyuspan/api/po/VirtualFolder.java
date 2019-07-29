@@ -1,6 +1,8 @@
-package org.keyus.project.keyuspan.api.pojo;
+package org.keyus.project.keyuspan.api.po;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,8 +12,10 @@ import java.io.Serializable;
  * @create 2019-07-27  下午10:12
  */
 @Data
-@Entity(name = "virtual_file_folder")
-public class VirtualFileFolder implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "virtual_folder")
+public class VirtualFolder implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

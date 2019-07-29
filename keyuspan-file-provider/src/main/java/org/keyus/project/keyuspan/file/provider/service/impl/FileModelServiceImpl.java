@@ -1,11 +1,12 @@
 package org.keyus.project.keyuspan.file.provider.service.impl;
 
-import org.keyus.project.keyuspan.api.pojo.FileModel;
+import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.file.provider.dao.FileModelDao;
 import org.keyus.project.keyuspan.file.provider.service.FileModelService;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,10 +25,29 @@ public class FileModelServiceImpl implements FileModelService {
         this.fileModelDao = fileModelDao;
     }
 
-
     @Override
     public Optional<FileModel> findById(Long id) {
         return fileModelDao.findById(id);
+    }
+
+    @Override
+    public List<FileModel> findAll() {
+        return fileModelDao.findAll();
+    }
+
+    @Override
+    public <S extends FileModel> List<S> findAll(Example<S> example) {
+        return fileModelDao.findAll(example);
+    }
+
+    @Override
+    public List<FileModel> findAll(Sort sort) {
+        return fileModelDao.findAll(sort);
+    }
+
+    @Override
+    public <S extends FileModel> List<S> findAll(Example<S> example, Sort sort) {
+        return fileModelDao.findAll(example, sort);
     }
 
     @Override

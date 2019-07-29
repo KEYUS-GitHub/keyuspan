@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.common.provider.controller;
 
+import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.util.VerificationCode;
 import org.keyus.project.keyuspan.api.util.VerificationCodePool;
@@ -11,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
  * @create 2019-07-18  下午9:43
  */
 @RestController
+@AllArgsConstructor
 public class CommonProviderController {
 
-    @Autowired
-    private VerificationCodePool verificationCodePool;
+    private final VerificationCodePool verificationCodePool;
 
     @PostMapping("/create_verification_code")
-    public ServerResponse createVerificationCode(@RequestBody String key) {
+    public ServerResponse <VerificationCode> createVerificationCode(@RequestParam("key") String key) {
         VerificationCode verifyCode = verificationCodePool.createVerifyCode(key);
         return ServerResponse.createBySuccessWithData(verifyCode);
     }
