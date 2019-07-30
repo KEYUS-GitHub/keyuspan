@@ -1,6 +1,7 @@
 package org.keyus.project.keyuspan.member.provider.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.member.provider.service.MemberService;
@@ -31,7 +32,7 @@ public class MemberProviderController {
         Member save = memberService.save(member);
         // 如果ID不是空值，则表明保存成功
         if (Objects.isNull(save.getId())) {
-            return ServerResponse.createByErrorWithMessage("保存失败!");
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_REGISTER_FAIL.getMessage());
         } else {
             return ServerResponse.createBySuccessWithData(save);
         }

@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.api.interceptor;
 
+import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -23,7 +24,7 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        request.getSession().setAttribute("member", member);
+        request.getSession().setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), member);
         return true;
     }
 }

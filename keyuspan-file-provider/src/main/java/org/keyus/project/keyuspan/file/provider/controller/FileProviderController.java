@@ -1,6 +1,7 @@
 package org.keyus.project.keyuspan.file.provider.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.util.FileModelUtil;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -32,22 +34,22 @@ public class FileProviderController {
     private final FileService fileService;
 
     @PostMapping("/upload_file")
-    public ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, @RequestParam("id") Long id, HttpSession session) throws IOException {
-        Member member = (Member) session.getAttribute("member");
+    public ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, @RequestParam("folder_id") Long folderId, HttpSession session) throws IOException {
+        Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         String uri = fileService.uploadFile(file);
-        // TODO: 19-7-29 修改整个上传逻辑，增加fileModler属性father_folder_id的数值
-        FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri);
+        // TODO: 19-7-29 添加上传完成后，会员已经使用的存储空间增加的业务逻辑
+        FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri, folderId);
         FileModel save = fileModelService.save(fileModel);
         return ServerResponse.createBySuccessWithData(save);
     }
 
     @PostMapping("/upload_files")
-    public ServerResponse <List<FileModel>> uploadFiles (@RequestParam("files") MultipartFile[] files, @RequestParam("id") Long id, HttpSession session) throws Exception {
-        Member member = (Member) session.getAttribute("member");
+    public ServerResponse <List<FileModel>> uploadFiles (@RequestParam("files") MultipartFile[] files, @RequestParam("folder_id") Long folderId, HttpSession session) throws Exception {
+        Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         List<MultipartFile> list = new ArrayList<>(Arrays.asList(files));
         String[] uris = fileService.uploadFiles(list);
-        // TODO: 19-7-29 修改整个上传逻辑，增加fileModler属性father_folder_id的数值
-        List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris);
+        // TODO: 19-7-29 添加上传完成后，会员已经使用的存储空间增加的业务逻辑
+        List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris, folderId);
         List<FileModel> saveAll = fileModelService.saveAll(fileModels);
         return ServerResponse.createBySuccessWithData(saveAll);
     }
@@ -55,7 +57,7 @@ public class FileProviderController {
     @PostMapping("/get_files_by_folder_id")
     public ServerResponse <List<FileModel>> getFilesByFolderId(@RequestParam("id") Long id) {
         FileModel fileModel = new FileModel();
-        fileModel.setFileFolderId(id);
+        fileModel.setFolderId(id);
         return ServerResponse.createBySuccessWithData(fileModelService.findAll(Example.of(fileModel)));
     }
 }

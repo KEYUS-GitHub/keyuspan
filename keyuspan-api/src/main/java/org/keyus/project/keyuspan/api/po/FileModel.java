@@ -31,8 +31,8 @@ public class FileModel implements Serializable {
     private Long memberId;
 
     // 该文件所在的虚拟文件夹ID
-    @Column(name = "file_folder_id")
-    private Long fileFolderId;
+    @Column(name = "folder_id")
+    private Long folderId;
 
     // 文件名（包含扩展名）
     @Column(name = "file_name")

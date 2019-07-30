@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class FileModelUtil {
 
-    public static FileModel changeToFileModel (Long memberId, MultipartFile file, String uri) {
+    public static FileModel changeToFileModel (Long memberId, MultipartFile file, String uri, Long folderId) {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = file.getOriginalFilename();
         double size = (double) file.getSize() / 1024.0; // 获得字节数，单位是KB
@@ -28,19 +28,20 @@ public class FileModelUtil {
         fileModel.setDeleted(false);
         fileModel.setUpdateDate(new Date());
         fileModel.setMemberId(memberId);
+        fileModel.setFolderId(folderId);
         fileModel.setDateOfRecovery(null);
         fileModel.setUri(uri);
         return fileModel;
     }
 
-    public static List<FileModel> changeToFileModels (Long memberId, List<MultipartFile> files, String[] uris) throws Exception {
+    public static List<FileModel> changeToFileModels (Long memberId, List<MultipartFile> files, String[] uris, Long folderId) throws Exception {
         if (files.size() != uris.length) {
             throw new Exception("上传文件时系统出错");
         }
         List<FileModel> res = new ArrayList<>();
         int size = uris.length;
         for (int i = 0; i < size; i++) {
-            FileModel fileModel = FileModelUtil.changeToFileModel(memberId, files.get(i), uris[i]);
+            FileModel fileModel = FileModelUtil.changeToFileModel(memberId, files.get(i), uris[i], folderId);
             res.add(fileModel);
         }
         return res;

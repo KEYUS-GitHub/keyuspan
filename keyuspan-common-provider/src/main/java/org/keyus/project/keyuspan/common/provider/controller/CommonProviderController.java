@@ -1,6 +1,7 @@
 package org.keyus.project.keyuspan.common.provider.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.util.VerificationCode;
 import org.keyus.project.keyuspan.api.util.VerificationCodePool;
@@ -29,7 +30,7 @@ public class CommonProviderController {
         if (check) {
             return ServerResponse.createBySuccessWithoutData();
         } else {
-            return ServerResponse.createByErrorWithMessage("验证码错误");
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.VERIFICATION_CODE_ERROR.getMessage());
         }
     }
 }

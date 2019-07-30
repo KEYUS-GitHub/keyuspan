@@ -2,6 +2,7 @@ package org.keyus.project.keyuspan.api.util;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.keyus.project.keyuspan.api.enums.ResponseCodeEnum;
 
 import java.io.Serializable;
 
@@ -13,7 +14,7 @@ import java.io.Serializable;
 // 加上一个空参构造方法，保证对象序列化与反序列化能正常工作
 // 否则，将导致JackSon包序列化或反序列化产生异常
 @NoArgsConstructor
-public class ServerResponse<T> implements Serializable {
+public class ServerResponse <T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,13 +22,13 @@ public class ServerResponse<T> implements Serializable {
     @Getter private String msg;
     @Getter private T data;
 
-    private ServerResponse(ResponseCodeEnum responseCodeEnum, T data) {
+    private ServerResponse (ResponseCodeEnum responseCodeEnum, T data) {
         this.status = responseCodeEnum.getCode();
         this.msg = responseCodeEnum.getDesc();
         this.data = data;
     }
 
-    private ServerResponse(int status, String msg, T data) {
+    private ServerResponse (int status, String msg, T data) {
         this.status = status;
         this.msg = msg;
         this.data = data;

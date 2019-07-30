@@ -1,6 +1,8 @@
 package org.keyus.project.keyuspan.member.consumer.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
+import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.service.common.CommonClientService;
 import org.keyus.project.keyuspan.api.service.member.MemberClientService;
@@ -29,6 +31,7 @@ public class MemberConsumerController {
 
     @PostMapping("/register")
     public ServerResponse register(Member member) {
+        // TODO: 19-7-30 补充注册的逻辑，如验证码验证，用户名不允许重复之类的
         return memberClientService.saveMember(member);
     }
 
@@ -46,14 +49,14 @@ public class MemberConsumerController {
         if (ServerResponse.isSuccess(response)) {
             // 用户名或密码错误，查无此记录，故而登录失败
             if (ServerResponse.isNullValue(response)) {
-                return ServerResponse.createByErrorWithMessage("用户名或密码错误");
+                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.USERNAME_OR_PASSWORD_ERROR.getMessage());
             } else {
                 // 登录成功，登录信息存入session当中
-                session.setAttribute("member", response.getData());
+                session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), response.getData());
                 return response;
             }
         } else {
-            return ServerResponse.createByErrorWithMessage("系统出现异常，请稍后再试");
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SYSTEM_EXCEPTION.getMessage());
         }
     }
 }

@@ -1,4 +1,4 @@
-package org.keyus.project.keyuspan.api.util;
+package org.keyus.project.keyuspan.api.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,14 +12,13 @@ import lombok.Getter;
 public enum ResponseCodeEnum {
 
     // 普通的success
-    SUCCESS(0,"SUCCESS"),
+    SUCCESS (0,"SUCCESS"),
     // 只要不是error，均视为success，异常通过error处理
-    ERROR(1,"ERROR"),
+    ERROR (1,"ERROR"),
     // 查询结果为空值
-    NULL_VALUE(2, "NULL_VALUE"),
+    NULL_VALUE (2, "NULL_VALUE"),
     // 需要登录
-    NEED_LOGIN(10,"NEED_LOGIN");
-
+    NEED_LOGIN (10,"NEED_LOGIN");
     @Getter private final int code;
     @Getter private final String desc;
 }

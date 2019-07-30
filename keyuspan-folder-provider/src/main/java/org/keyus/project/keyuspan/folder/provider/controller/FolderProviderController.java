@@ -1,6 +1,8 @@
 package org.keyus.project.keyuspan.folder.provider.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
+import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
@@ -32,7 +34,7 @@ public class FolderProviderController {
 
     @PostMapping("/open_folder")
     public ServerResponse openFileFolderById (@RequestBody Long id, HttpSession session) {
-        Member member = (Member) session.getAttribute("member");
+        Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         Optional<VirtualFolder> optional = virtualFolderService.findById(id);
         if (optional.isPresent() && VirtualFolderUtil.isBelongToThisMember(member, optional.get())) {
             VirtualFolder virtualFolder = new VirtualFolder();
@@ -43,7 +45,7 @@ public class FolderProviderController {
             ServerResponse <List<FileModel>> response = fileClientService.getFilesByFolderId(optional.get().getId());
             return ServerResponse.createBySuccessWithData(VirtualFolderVO.getInstance(virtualFolders, response.getData()));
         } else {
-            return ServerResponse.createByErrorWithMessage("该文件夹不存在");
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
         }
     }
 }
