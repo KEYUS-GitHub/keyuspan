@@ -1,7 +1,7 @@
 package org.keyus.project.keyuspan.common.consumer.controller;
 
 import lombok.AllArgsConstructor;
-import org.keyus.project.keyuspan.api.service.common.CommonClientService;
+import org.keyus.project.keyuspan.api.client.service.common.CommonClientService;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;

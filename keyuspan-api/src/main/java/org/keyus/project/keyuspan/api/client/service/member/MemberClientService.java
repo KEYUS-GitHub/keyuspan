@@ -1,4 +1,4 @@
-package org.keyus.project.keyuspan.api.service.member;
+package org.keyus.project.keyuspan.api.client.service.member;
 
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.util.ServerResponse;

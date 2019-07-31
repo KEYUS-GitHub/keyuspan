@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author keyus
@@ -40,4 +41,8 @@ public class VirtualFolder implements Serializable {
     // 虚拟文件夹的路径
     @Column(name = "virtual_path")
     private String virtualPath;
+
+    // 修改日期
+    @Column(name = "update_date")
+    private Date updateDate;
 }

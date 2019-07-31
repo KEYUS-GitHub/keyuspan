@@ -13,13 +13,15 @@ import java.util.List;
  */
 public interface FileService {
 
-    String uploadFile(MultipartFile file) throws IOException;
+    String uploadFile (MultipartFile file) throws IOException;
 
-    String[] uploadFiles(List<MultipartFile> files) throws IOException;
+    String[] uploadFiles (List<MultipartFile> files) throws IOException;
 
-    String uploadFile(File file) throws IOException;
+    String uploadFile (File file) throws IOException;
 
-    String uploadFile(String content, String fileExtension);
+    String uploadFile (String content, String fileExtension);
 
-    void deleteFile(String fileUrl);
+    void deleteFile (String fileUrl);
+
+    String getWebServerUrl();
 }

@@ -1,4 +1,4 @@
-package org.keyus.project.keyuspan.api.service.common;
+package org.keyus.project.keyuspan.api.client.service.common;
 
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.util.VerificationCode;

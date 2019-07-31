@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VerificationCode {
+
     @Getter private String key;
     @Getter private String answer;
 

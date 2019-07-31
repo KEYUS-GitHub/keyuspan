@@ -1,4 +1,4 @@
-package org.keyus.project.keyuspan.api.service.file;
+package org.keyus.project.keyuspan.api.client.service.file;
 
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.api.util.ServerResponse;

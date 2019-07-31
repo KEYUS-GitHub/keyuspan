@@ -1,4 +1,4 @@
-package org.keyus.project.keyuspan.api.service.common;
+package org.keyus.project.keyuspan.api.client.service.common;
 
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
