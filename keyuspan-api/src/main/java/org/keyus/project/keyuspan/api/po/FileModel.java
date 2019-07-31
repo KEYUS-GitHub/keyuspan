@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * @author keyus
@@ -56,11 +56,11 @@ public class FileModel implements Serializable {
 
     // 修改日期
     @Column(name = "update_date")
-    private Date updateDate;
+    private LocalDate updateDate;
 
     // 文件在进入回收站时，在哪个日期被删除
     @Column(name = "date_of_recovery")
-    private Date dateOfRecovery;
+    private LocalDate dateOfRecovery;
 
     // 是否被删除
     @Column(name = "deleted")

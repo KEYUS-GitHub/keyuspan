@@ -4,6 +4,7 @@ import org.keyus.project.keyuspan.api.po.FileModel;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ public class FileModelUtil {
         fileModel.setSize(size);
         fileModel.setContentType(contentType);
         fileModel.setDeleted(false);
-        fileModel.setUpdateDate(new Date());
+        fileModel.setUpdateDate(LocalDate.now());
         fileModel.setMemberId(memberId);
         fileModel.setFolderId(folderId);
         fileModel.setDateOfRecovery(null);

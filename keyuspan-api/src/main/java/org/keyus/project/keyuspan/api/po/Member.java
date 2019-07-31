@@ -2,7 +2,7 @@ package org.keyus.project.keyuspan.api.po;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,11 +48,11 @@ public class Member implements Serializable {
 
     // 开启超级会员特权的起始日期
     @Column(name = "begin_date")
-    private Date beginDate;
+    private LocalDate beginDate;
 
     // 超级会员特权的结束日期
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     // 可使用的存储空间总量（单位为MB）
     @Column(name = "total_storage_space")

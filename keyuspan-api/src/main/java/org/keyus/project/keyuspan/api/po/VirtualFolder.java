@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * @author keyus
@@ -44,5 +44,9 @@ public class VirtualFolder implements Serializable {
 
     // 修改日期
     @Column(name = "update_date")
-    private Date updateDate;
+    private LocalDate updateDate;
+
+    // 是否被删除
+    @Column(name = "deleted")
+    private Boolean deleted;
 }

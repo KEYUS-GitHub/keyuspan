@@ -3,6 +3,7 @@ package org.keyus.project.keyuspan.api.util;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ public class VirtualFolderUtil {
         newVirtualFolder.setFatherFolderId(fatherFolderId);
         newVirtualFolder.setVirtualFolderName(folderName);
         newVirtualFolder.setVirtualPath(fatherFolderVirtualPath + '/' + folderName);
-        newVirtualFolder.setUpdateDate(new Date());
+        newVirtualFolder.setUpdateDate(LocalDate.now());
         return newVirtualFolder;
     }
 }
