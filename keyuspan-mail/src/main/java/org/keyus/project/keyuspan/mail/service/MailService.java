@@ -60,8 +60,7 @@ public class MailService {
         }
     }
 
-    public void sendAttachmentsMail(String toMail, String subject, String content,
-                                    String filePath) {
+    public void sendAttachmentsMail(String toMail, String subject, String content, String filePath) {
         MimeMessage message = sender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
