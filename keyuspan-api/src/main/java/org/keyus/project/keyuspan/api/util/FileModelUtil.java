@@ -1,12 +1,12 @@
 package org.keyus.project.keyuspan.api.util;
 
+import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class FileModelUtil {
 
     public static List<FileModel> changeToFileModels (Long memberId, List<MultipartFile> files, String[] uris, Long folderId) throws Exception {
         if (files.size() != uris.length) {
-            throw new Exception("上传文件时系统出错");
+            throw new Exception(ErrorMessageEnum.SYSTEM_EXCEPTION.getMessage());
         }
         List<FileModel> res = new ArrayList<>();
         int size = uris.length;

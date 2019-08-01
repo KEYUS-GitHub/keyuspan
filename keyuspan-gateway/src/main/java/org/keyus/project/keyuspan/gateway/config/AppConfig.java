@@ -1,9 +1,5 @@
 package org.keyus.project.keyuspan.gateway.config;
 
-import org.keyus.project.keyuspan.gateway.config.filter.SimpleLoggingFilter;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -20,7 +16,7 @@ public class AppConfig {
 //                .route(r -> r.path("/**")
 //                .filters(f -> f.filter(simpleLoggingFilter)
 //                .addResponseHeader("X-Response-Default-Foo", "Default-Bar"))
-//                .uri("lb://keyuspan-common-consumer")
+//                .uri("lb://org.keyus.project.keyuspan-common-consumer")
 //                .order(0)
 //                .id("consumer_filter_router"))
 //                .build();

@@ -20,7 +20,7 @@ spring:
           enabled: true # 自动映射
 #      routes:
 #        - id: member
-#          uri: lb://keyuspan-member-provider  # uri：用lb:// + eureka中注册的微服务名称
+#          uri: lb://org.keyus.project.keyuspan-member-provider  # uri：用lb:// + eureka中注册的微服务名称
 #          predicates:
 #            - Path=/**
 #          filters:                     #filters：过滤规则

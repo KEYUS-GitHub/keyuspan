@@ -35,36 +35,36 @@ public class ServerResponse <T> implements Serializable {
     }
 
     // 只要响应不是error，都视为success
-    public static boolean isSuccess(ServerResponse response) {
+    public static boolean isSuccess (ServerResponse response) {
         return response != null && response.status != ResponseCodeEnum.ERROR.getCode();
     }
 
     // 响应是null，或者ResponseCode是error，都视为error
-    public static boolean isError(ServerResponse response) {
+    public static boolean isError (ServerResponse response) {
         return response == null || response.status == ResponseCodeEnum.ERROR.getCode();
     }
 
-    public static boolean isNullValue(ServerResponse response) {
+    public static boolean isNullValue (ServerResponse response) {
         return response != null && response.status == ResponseCodeEnum.NULL_VALUE.getCode();
     }
 
-    public static <T> ServerResponse<T> createBySuccessWithoutData() {
+    public static <T> ServerResponse<T> createBySuccessWithoutData () {
         return new ServerResponse<>(ResponseCodeEnum.SUCCESS, null);
     }
 
-    public static <T> ServerResponse<T> createBySuccessWithData(T data) {
+    public static <T> ServerResponse<T> createBySuccessWithData (T data) {
         return new ServerResponse<>(ResponseCodeEnum.SUCCESS, data);
     }
 
-    public static <T> ServerResponse<T> createBySuccessMessageWithoutData(String msg) {
+    public static <T> ServerResponse<T> createBySuccessMessageWithoutData (String msg) {
         return new ServerResponse<>(ResponseCodeEnum.SUCCESS.getCode(), msg, null);
     }
 
-    public static <T> ServerResponse<T> createBySuccessMessageWithData(String msg, T data) {
+    public static <T> ServerResponse<T> createBySuccessMessageWithData (String msg, T data) {
         return new ServerResponse<>(ResponseCodeEnum.SUCCESS.getCode(), msg, data);
     }
 
-    public static <T> ServerResponse<T> createBySuccessNullValue() {
+    public static <T> ServerResponse<T> createBySuccessNullValue () {
         return new ServerResponse<>(ResponseCodeEnum.NULL_VALUE, null);
     }
 
@@ -72,11 +72,11 @@ public class ServerResponse <T> implements Serializable {
         return new ServerResponse<>(ResponseCodeEnum.ERROR, null);
     }
 
-    public static <T> ServerResponse<T> createByErrorWithMessage(String msg) {
+    public static <T> ServerResponse<T> createByErrorWithMessage (String msg) {
         return new ServerResponse<>(ResponseCodeEnum.ERROR.getCode(), msg, null);
     }
 
-    public static <T> ServerResponse<T> createByErrorIllegalParameters(String[] parameters) {
+    public static <T> ServerResponse<T> createByErrorIllegalParameters (String[] parameters) {
         StringBuilder builder = new StringBuilder("Error! your parameters: ");
         for (String parameter : parameters) {
             builder.append(parameter);
@@ -88,11 +88,11 @@ public class ServerResponse <T> implements Serializable {
         return new ServerResponse<>(ResponseCodeEnum.ERROR.getCode(), builder.toString(), null);
     }
 
-    public static <T> ServerResponse<T> createByNeedLogin() {
+    public static <T> ServerResponse<T> createByNeedLogin () {
         return new ServerResponse<>(ResponseCodeEnum.NEED_LOGIN, null);
     }
 
-    public static <T> ServerResponse<T> createAnyServerResponse(int status, String msg, T data) {
+    public static <T> ServerResponse<T> createAnyServerResponse (int status, String msg, T data) {
         return new ServerResponse<>(status, msg, data);
     }
 }

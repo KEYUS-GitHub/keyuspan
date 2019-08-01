@@ -6,7 +6,6 @@ import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.exception.FileDownloadException;
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.api.po.Member;
-import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.FileDownloadPasswordUtil;
 import org.keyus.project.keyuspan.api.util.FileDownloadProxyUtil;
 import org.keyus.project.keyuspan.api.util.FileModelUtil;
@@ -19,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -62,9 +61,7 @@ public class FileProviderController {
     @PostMapping("/get_files_by_folder_id")
     public ServerResponse <List<FileModel>> getFilesByFolderId(@RequestParam("id") Long id) {
         FileModel fileModel = new FileModel();
-        // 通过目录的ID查询
         fileModel.setFolderId(id);
-        // 查询未被删除的
         fileModel.setDeleted(false);
         return ServerResponse.createBySuccessWithData(fileModelService.findAll(Example.of(fileModel)));
     }
@@ -90,48 +87,43 @@ public class FileProviderController {
         } else {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FILE_NOT_EXIST.getMessage());
         }
-     }
+    }
 
-     @PostMapping("/download_file")
-     public void downloadFile (@RequestParam("key") String key, HttpServletRequest request, HttpServletResponse response) throws FileDownloadException, IOException {
-         // TODO: 19-7-30 实现文件下载的业务逻辑，要求是前端通过一个加密的字符串值
-         //  解析出文件模型的ID，然后获取uri，执行下载，前端的请求参数没有文件
-         //  的ID值，而是通过ID值加密出一个字符串值，后端再解密出ID，然后通过代
-         //  理，代替用户的客户端去下载文件，需要检测权限。
-         Long id = FileDownloadPasswordUtil.decrypt(key);
-         Optional<FileModel> optional = fileModelService.findById(id);
-         if (optional.isPresent()) {
-             FileModel fileModel = optional.get();
-             String url = FileDownloadProxyUtil.getRealUrl(fileService.getWebServerUrl(), fileModel.getUri());
-             FileDownloadProxyUtil.proxyAndDownload(request, response, url, null, fileModel.getFileName());
-         } else {
-             // TODO: 19-7-31 抛出异常之后跳转至一个提示页面
-             throw new FileDownloadException(ErrorMessageEnum.FILE_DOWNLOAD_EXCEPTION.getMessage());
-         }
-     }
-
-    @PostMapping("/delete_file")
-    public ServerResponse <FileModel> deleteFile (@RequestParam("id") Long id, HttpSession session) {
+    @PostMapping("/download_file")
+    public void downloadFile (@RequestParam("key") String key, HttpServletResponse response) throws FileDownloadException, IOException {
+        // TODO: 19-7-30 实现文件下载的业务逻辑，要求是前端通过一个加密的字符串值
+        //  解析出文件模型的ID，然后获取uri，执行下载，前端的请求参数没有文件
+        //  的ID值，而是通过ID值加密出一个字符串值，后端再解密出ID，然后通过代
+        //  理，代替用户的客户端去下载文件，需要检测权限。
+        Long id = FileDownloadPasswordUtil.decrypt(key);
         Optional<FileModel> optional = fileModelService.findById(id);
         if (optional.isPresent()) {
-            Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
-            // 获取当前用户回收站保存日期
-            Integer collectionDays = member.getGarbageCollectionDays();
-            // 使用LocalDate计算该文件被回收站回收的日期
-            LocalDate now = LocalDate.now();
-            // 加上当前用户的回收站保存日期
-            LocalDate collectionDate = now.plusDays(collectionDays);
-
-            // 设置回收日期
             FileModel fileModel = optional.get();
-            fileModel.setDateOfRecovery(collectionDate);
-            fileModel.setDeleted(true);
+            String url = FileDownloadProxyUtil.getRealUrl(fileService.getWebServerUrl(), fileModel.getUri());
+            FileDownloadProxyUtil.proxyAndDownload(response, url, null, fileModel.getFileName());
+        } else {
+            // TODO: 19-7-31 抛出异常之后跳转至一个提示页面
+            throw new FileDownloadException(ErrorMessageEnum.FILE_DOWNLOAD_EXCEPTION.getMessage());
+        }
+    }
 
-            // 更新数值
+    @PostMapping("/delete_file_by_id")
+    public ServerResponse <FileModel> deleteFileById (@RequestParam("id") Long id, HttpSession session) {
+        Optional<FileModel> optional = fileModelService.findById(id);
+        if (optional.isPresent()) {
+            // 获取该会员回收站保留文件的天数
+            Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
+            Integer collectionDays = member.getGarbageCollectionDays();
+            // 修改文件模型对象的值
+            FileModel fileModel = optional.get();
+            fileModel.setDeleted(true);
+            fileModel.setDateOfRecovery(LocalDate.now().plusDays(collectionDays));
+            // 更新数据
             FileModel save = fileModelService.save(fileModel);
             return ServerResponse.createBySuccessWithData(save);
+        } else {
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FILE_NOT_EXIST.getMessage());
         }
-        return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FILE_NOT_EXIST.getMessage());
     }
 
     @PostMapping("/share_file")
@@ -145,5 +137,6 @@ public class FileProviderController {
         // TODO: 19-7-30 通过他人共享的链接来保存分享的文件夹
         return null;
     }
+
 
 }

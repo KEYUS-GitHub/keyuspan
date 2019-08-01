@@ -11,11 +11,10 @@
         <module>keyuspan-member-provider</module>
         <module>keyuspan-member-consumer</module>
         <module>keyuspan-mail</module>
-        <module>keyuspan-common-provider</module>
         <module>keyuspan-gateway</module>
-        <module>keyuspan-common-consumer</module>
         <module>keyuspan-file-provider</module>
         <module>keyuspan-folder-provider</module>
+        <module>keyuspan-common</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -124,11 +123,17 @@
                 <artifactId>commons-io</artifactId>
                 <version>2.6</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha -->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>2.3.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
-        <finalName>keyuspan</finalName>
+        <finalName>org.keyus.project.keyuspan</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

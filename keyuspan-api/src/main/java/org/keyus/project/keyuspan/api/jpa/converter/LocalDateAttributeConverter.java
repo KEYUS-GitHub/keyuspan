@@ -1,5 +1,7 @@
 package org.keyus.project.keyuspan.api.jpa.converter;
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.sql.Date;
@@ -10,6 +12,7 @@ import java.time.LocalDate;
  * @create 2019-07-31  下午2:49
  * 让hibernate支持LocalDate
  */
+@Component
 @Converter(autoApply = true)
 public class LocalDateAttributeConverter implements AttributeConverter<LocalDate, Date> {
 

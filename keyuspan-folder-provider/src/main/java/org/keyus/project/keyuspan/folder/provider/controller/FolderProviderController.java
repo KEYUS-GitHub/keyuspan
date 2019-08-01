@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+
 import java.time.LocalDate;
 import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -40,10 +42,9 @@ public class FolderProviderController {
         Optional<VirtualFolder> optional = virtualFolderService.findById(id);
         if (optional.isPresent() && VirtualFolderUtil.isBelongToThisMember(member, optional.get())) {
             VirtualFolder virtualFolder = new VirtualFolder();
-            // 查询当前目录下的子文件夹
             virtualFolder.setFatherFolderId(optional.get().getId());
-            // 查询未被删除的
-            virtualFolder.setDeleted(false);
+            virtualFolder.setDeleted(false); // 获取未被删除的文件夹
+
             // 获得该文件夹目录下的所有的一级子文件夹
             List<VirtualFolder> virtualFolders = virtualFolderService.findAll(Example.of(virtualFolder));
             // 获得该文件夹目录下的所有的文件
@@ -95,7 +96,7 @@ public class FolderProviderController {
     }
 
     @PostMapping("/delete_folder")
-    public ServerResponse <VirtualFolder> deleteFolder (@RequestParam("id") Long id, HttpSession session) {
+    public ServerResponse <VirtualFolder> deleteFolder (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
         // TODO: 19-7-30 删除文件夹时也得删除该文件夹下的所有的文件夹和文件
         return null;
     }
