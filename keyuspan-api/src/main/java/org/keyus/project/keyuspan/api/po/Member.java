@@ -87,4 +87,7 @@ public class Member implements Serializable {
     // 头像图片的URI
     @Column(name = "head_img_uri")
     private String headImgUri;
+
+    @Column(name = "main_folder_id")
+    private Long mainFolderId;
 }

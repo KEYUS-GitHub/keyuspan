@@ -27,7 +27,7 @@ public class MemberProviderController {
         return ServerResponse.createBySuccessWithData(memberService.getMembers());
     }
 
-    @PostMapping("/save")
+    @PostMapping("/save_or_update")
     public ServerResponse <Member> saveMember(@RequestBody Member member) {
         Member save = memberService.save(member);
         // 如果ID不是空值，则表明保存成功

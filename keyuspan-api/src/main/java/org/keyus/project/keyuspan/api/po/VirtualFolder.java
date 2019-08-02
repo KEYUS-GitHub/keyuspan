@@ -49,4 +49,8 @@ public class VirtualFolder implements Serializable {
     // 是否被删除
     @Column(name = "deleted")
     private Boolean deleted;
+
+    // 文件在进入回收站时，在哪个日期被删除
+    @Column(name = "date_of_recovery")
+    private LocalDate dateOfRecovery;
 }

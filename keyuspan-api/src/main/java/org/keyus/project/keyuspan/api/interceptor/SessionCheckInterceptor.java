@@ -20,6 +20,7 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
         member.setId(230L);
         member.setUsername("keyus");
         member.setPassword("keyus");
+        member.setGarbageCollectionDays(30);
     }
 
     @Override

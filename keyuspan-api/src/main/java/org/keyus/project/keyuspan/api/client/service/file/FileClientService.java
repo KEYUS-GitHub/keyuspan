@@ -26,4 +26,7 @@ public interface FileClientService {
 
     @PostMapping("/get_files_by_folder_id")
     ServerResponse <List<FileModel>> getFilesByFolderId(@RequestParam("id") Long id);
+
+    @PostMapping("/save_files")
+    ServerResponse <List<FileModel>> saveFiles (List<FileModel> list);
 }

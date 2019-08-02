@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.keyus.project.keyuspan.api.enums.ResponseCodeEnum;
 
 import java.io.Serializable;
+import java.util.Collections;
 
 /**
  * @author keyus
@@ -76,6 +77,9 @@ public class ServerResponse <T> implements Serializable {
         return new ServerResponse<>(ResponseCodeEnum.ERROR.getCode(), msg, null);
     }
 
+    /**
+     * 数据校验时使用
+     */
     public static <T> ServerResponse<T> createByErrorIllegalParameters (String[] parameters) {
         StringBuilder builder = new StringBuilder("Error! your parameters: ");
         for (String parameter : parameters) {
@@ -84,14 +88,32 @@ public class ServerResponse <T> implements Serializable {
         }
         // 去掉最后一个逗号
         builder.deleteCharAt(builder.length() - 1);
-        builder.append(" is illegal!");
+        builder.append(" can't be illegal!");
         return new ServerResponse<>(ResponseCodeEnum.ERROR.getCode(), builder.toString(), null);
     }
 
+    public static <T> ServerResponse<T> createByErrorNullValueParameters (String[] parameters) {
+        StringBuilder builder = new StringBuilder("Error! your parameters: ");
+        for (String parameter : parameters) {
+            builder.append(parameter);
+            builder.append(',');
+        }
+        // 去掉最后一个逗号
+        builder.deleteCharAt(builder.length() - 1);
+        builder.append(" can't be null!");
+        return new ServerResponse<>(ResponseCodeEnum.ERROR.getCode(), builder.toString(), null);
+    }
+
+    /**
+     * 权限验证时使用
+     */
     public static <T> ServerResponse<T> createByNeedLogin () {
         return new ServerResponse<>(ResponseCodeEnum.NEED_LOGIN, null);
     }
 
+    /**
+     * 通用的服务器响应
+     */
     public static <T> ServerResponse<T> createAnyServerResponse (int status, String msg, T data) {
         return new ServerResponse<>(status, msg, data);
     }

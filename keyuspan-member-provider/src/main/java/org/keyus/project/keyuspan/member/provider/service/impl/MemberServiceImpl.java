@@ -5,6 +5,7 @@ import org.keyus.project.keyuspan.member.provider.dao.MemberDao;
 import org.keyus.project.keyuspan.member.provider.service.MemberService;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
  * @create 2019-07-16  下午10:12
  */
 @Service
+@Transactional
 public class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;

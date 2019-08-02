@@ -1,10 +1,12 @@
 package org.keyus.project.keyuspan.member.consumer.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.client.service.folder.FolderClientService;
 import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
+import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,8 @@ public class MemberConsumerController {
 
     private final MemberClientService memberClientService;
 
+    private final FolderClientService folderClientService;
+
     @GetMapping("/members")
     public ServerResponse getMembers() {
         return memberClientService.getMembers();
@@ -29,7 +33,20 @@ public class MemberConsumerController {
     @PostMapping("/register")
     public ServerResponse register(Member member) {
         // TODO: 19-7-30 补充注册的逻辑，如验证码验证，用户名不允许重复之类的
-        return memberClientService.saveMember(member);
+        ServerResponse<Member> response = memberClientService.saveMember(member);
+        if (ServerResponse.isSuccess(response)) {
+            Member save = response.getData();
+            ServerResponse<VirtualFolder> serverResponse = folderClientService.createMainFolder(save.getId());
+            if (ServerResponse.isSuccess(serverResponse)) {
+                VirtualFolder virtualFolder = serverResponse.getData();
+                save.setMainFolderId(virtualFolder.getId());
+                return memberClientService.saveMember(save);
+            } else {
+                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_REGISTER_FAIL.getMessage());
+            }
+        } else {
+            return response;
+        }
     }
 
     @PostMapping("/login")

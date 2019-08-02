@@ -14,13 +14,13 @@ import org.keyus.project.keyuspan.file.provider.service.FileModelService;
 import org.keyus.project.keyuspan.file.provider.service.FileService;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -136,5 +136,15 @@ public class FileProviderController {
     public ServerResponse <FileModel> saveFileByShare (@RequestParam("id") Long id, HttpSession session) {
         // TODO: 19-7-30 通过他人共享的链接来保存分享的文件夹
         return null;
+    }
+
+    @PostMapping("/save_files")
+    public ServerResponse <List<FileModel>> saveFiles (@RequestBody List<FileModel> list) {
+        if (Objects.isNull(list)) {
+            return ServerResponse.createBySuccessWithData(Collections.emptyList());
+        }
+        // 执行更新操作
+        List<FileModel> all = fileModelService.saveAll(list);
+        return ServerResponse.createBySuccessWithData(all);
     }
 }

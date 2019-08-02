@@ -18,7 +18,7 @@ public interface MemberClientService {
     @PostMapping("/members")
     ServerResponse <List<Member>> getMembers();
 
-    @PostMapping("/save")
+    @PostMapping("/save_or_update")
     ServerResponse <Member> saveMember(@RequestBody Member member);
 
     @PostMapping("/find_one")
