@@ -6,7 +6,7 @@ import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.exception.FileDownloadException;
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.api.po.Member;
-import org.keyus.project.keyuspan.api.util.FileDownloadPasswordUtil;
+import org.keyus.project.keyuspan.api.util.PasswordToIdUtil;
 import org.keyus.project.keyuspan.api.util.FileDownloadProxyUtil;
 import org.keyus.project.keyuspan.api.util.FileModelUtil;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
@@ -95,7 +95,7 @@ public class FileProviderController {
         //  解析出文件模型的ID，然后获取uri，执行下载，前端的请求参数没有文件
         //  的ID值，而是通过ID值加密出一个字符串值，后端再解密出ID，然后通过代
         //  理，代替用户的客户端去下载文件，需要检测权限。
-        Long id = FileDownloadPasswordUtil.decrypt(key);
+        Long id = PasswordToIdUtil.decrypt(key);
         Optional<FileModel> optional = fileModelService.findById(id);
         if (optional.isPresent()) {
             FileModel fileModel = optional.get();
