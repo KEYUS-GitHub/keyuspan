@@ -1,6 +1,7 @@
 package org.keyus.project.keyuspan.file.provider.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
 import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.exception.FileDownloadException;
@@ -37,13 +38,23 @@ public class FileProviderController {
 
     private final FileService fileService;
 
+    private final MemberClientService memberClientService;
+
     @PostMapping("/upload_file")
     public ServerResponse <FileModel> uploadFile (@RequestParam("file") MultipartFile file, @RequestParam("folder_id") Long folderId, HttpSession session) throws IOException {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         String uri = fileService.uploadFile(file);
-        // TODO: 19-7-29 添加上传完成后，会员已经使用的存储空间增加的业务逻辑
         FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri, folderId);
+        double fileSize = fileModel.getSize() / 1024;
+        if (fileSize + member.getUsedStorageSpace() > member.getTotalStorageSpace()) {
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.OUT_OF_MEMBER_STORAGE_SPACE.getMessage());
+        }
+        // 否则
         FileModel save = fileModelService.save(fileModel);
+        // 计算已经使用的size，单位是KB
+        Double size = fileSize + member.getUsedStorageSpace();
+        member.setUsedStorageSpace(size);
+        memberClientService.saveMember(member);
         return ServerResponse.createBySuccessWithData(save);
     }
 
@@ -52,8 +63,18 @@ public class FileProviderController {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         List<MultipartFile> list = new ArrayList<>(Arrays.asList(files));
         String[] uris = fileService.uploadFiles(list);
-        // TODO: 19-7-29 添加上传完成后，会员已经使用的存储空间增加的业务逻辑
         List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris, folderId);
+
+        // 计算空间总和
+        double fileSize = 0.0;
+        for (FileModel fileModel : fileModels) {
+            fileSize += fileModel.getSize() / 1024;
+        }
+
+        if (fileSize + member.getUsedStorageSpace() > member.getTotalStorageSpace()) {
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.OUT_OF_MEMBER_STORAGE_SPACE.getMessage());
+        }
+
         List<FileModel> saveAll = fileModelService.saveAll(fileModels);
         return ServerResponse.createBySuccessWithData(saveAll);
     }

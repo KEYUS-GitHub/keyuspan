@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.keyus.project.keyuspan.api.enums.ResponseCodeEnum;
 
 import java.io.Serializable;
-import java.util.Collections;
 
 /**
  * @author keyus

@@ -31,21 +31,36 @@ public class MemberConsumerController {
     }
 
     @PostMapping("/register")
-    public ServerResponse register(Member member) {
-        // TODO: 19-7-30 补充注册的逻辑，如验证码验证，用户名不允许重复之类的
-        ServerResponse<Member> response = memberClientService.saveMember(member);
-        if (ServerResponse.isSuccess(response)) {
-            Member save = response.getData();
-            ServerResponse<VirtualFolder> serverResponse = folderClientService.createMainFolder(save.getId());
-            if (ServerResponse.isSuccess(serverResponse)) {
-                VirtualFolder virtualFolder = serverResponse.getData();
-                save.setMainFolderId(virtualFolder.getId());
-                return memberClientService.saveMember(save);
+    public ServerResponse register(Member member, @RequestParam("key") String key, HttpSession session) {
+        String capText = (String) session.getAttribute(SessionAttributeNameEnum.CAPTCHA_FOR_IMAGE.getName());
+        // 验证码校验
+        if (Objects.equals(key, capText)) {
+            // 构建查询对象
+            Member check = new Member();
+            check.setUsername(member.getUsername());
+            ServerResponse<Member> one = memberClientService.findOne(check);
+            if (ServerResponse.isError(one)) {
+                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SYSTEM_EXCEPTION.getMessage());
+            } else if (ServerResponse.isNullValue(one)) {
+                ServerResponse<Member> response = memberClientService.saveMember(member);
+                if (ServerResponse.isSuccess(response)) {
+                    Member save = response.getData();
+                    ServerResponse<VirtualFolder> serverResponse = folderClientService.createMainFolder(save.getId());
+                    if (ServerResponse.isSuccess(serverResponse)) {
+                        VirtualFolder virtualFolder = serverResponse.getData();
+                        save.setMainFolderId(virtualFolder.getId());
+                        return memberClientService.saveMember(save);
+                    } else {
+                        return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_REGISTER_FAIL.getMessage());
+                    }
+                } else {
+                    return response;
+                }
             } else {
-                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_REGISTER_FAIL.getMessage());
+                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.USERNAME_REPEAT.getMessage());
             }
         } else {
-            return response;
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.CAPTCHA_CHECK_ERROR.getMessage());
         }
     }
 

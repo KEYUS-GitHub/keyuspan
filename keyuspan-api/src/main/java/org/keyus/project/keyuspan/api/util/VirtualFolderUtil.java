@@ -33,9 +33,8 @@ public class VirtualFolderUtil {
     public static VirtualFolder createMainVirtualFolder (Long memberId) {
         VirtualFolder virtualFolder = new VirtualFolder();
         virtualFolder.setMemberId(memberId);
-        virtualFolder.setFatherFolderId(0L);
+        virtualFolder.setFatherFolderId(null);
         virtualFolder.setDeleted(false);
-
         return virtualFolder;
     }
 }
