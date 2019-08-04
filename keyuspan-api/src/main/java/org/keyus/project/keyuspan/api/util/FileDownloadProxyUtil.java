@@ -56,7 +56,6 @@ public class FileDownloadProxyUtil {
             log.error("File Download Proxy URL File error, e = {}", e.getMessage());
             throw e;
         } finally {
-
             if (is != null) {
                 is.close();
             }
