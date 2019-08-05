@@ -35,4 +35,5 @@ public interface VirtualFolderService {
 
     void delete(VirtualFolder virtualFolder);
 
+    void deleteInBatch(Iterable<VirtualFolder> iterable);
 }

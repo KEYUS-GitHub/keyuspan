@@ -1,0 +1,24 @@
+server:
+  port: 13000
+
+spring:
+  application:
+    name: keyuspan-task
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 3000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: keyuspan-task
+    prefer-ip-address: true     #访问路径可以显示IP地址
+
+info:
+  app.name: keyuspan-task
+  build.artifactId: ${project.artifactId}
+  build.version: ${project.version}

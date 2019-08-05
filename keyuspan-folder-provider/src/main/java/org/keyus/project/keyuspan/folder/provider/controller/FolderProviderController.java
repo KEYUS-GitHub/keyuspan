@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,5 +50,15 @@ public class FolderProviderController {
     @PostMapping("/save_all")
     public ServerResponse <List<VirtualFolder>> saveAll (@RequestBody List<VirtualFolder> virtualFolders) {
         return ServerResponse.createBySuccessWithData(virtualFolderService.saveAll(virtualFolders));
+    }
+
+    @PostMapping("/delete_in_recycle_bin")
+    public void deleteFoldersInRecycleBin () {
+        VirtualFolder folder = new VirtualFolder();
+        // 对回收站中的记录真正地执行删除
+        folder.setDeleted(true);
+        folder.setDateOfRecovery(LocalDate.now());
+        List<VirtualFolder> all = virtualFolderService.findAll(Example.of(folder));
+        virtualFolderService.deleteInBatch(all);
     }
 }

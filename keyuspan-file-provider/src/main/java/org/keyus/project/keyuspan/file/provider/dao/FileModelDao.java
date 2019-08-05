@@ -48,4 +48,7 @@ public interface FileModelDao extends JpaRepository<FileModel, Long> {
 
     @Override
     void deleteAll(Iterable<? extends FileModel> iterable);
+
+    @Override
+    void deleteInBatch(Iterable<FileModel> iterable);
 }

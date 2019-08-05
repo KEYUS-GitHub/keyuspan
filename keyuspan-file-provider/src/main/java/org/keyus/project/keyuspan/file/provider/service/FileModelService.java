@@ -37,6 +37,7 @@ public interface FileModelService {
 
     void delete(FileModel fileModel);
 
-
     void deleteAll(Iterable<? extends FileModel> iterable);
+
+    void deleteInBatch(Iterable<FileModel> iterable);
 }

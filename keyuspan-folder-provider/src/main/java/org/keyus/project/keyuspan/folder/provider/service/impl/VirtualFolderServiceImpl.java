@@ -76,4 +76,9 @@ public class VirtualFolderServiceImpl implements VirtualFolderService {
     public void delete(VirtualFolder virtualFolder) {
         virtualFileFolderDao.delete(virtualFolder);
     }
+
+    @Override
+    public void deleteInBatch(Iterable<VirtualFolder> iterable) {
+        virtualFileFolderDao.deleteInBatch(iterable);
+    }
 }

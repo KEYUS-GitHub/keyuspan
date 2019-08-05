@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -74,5 +75,14 @@ public class FileProviderController {
         fileModel.setFolderId(id);
         fileModel.setDeleted(false);
         return ServerResponse.createBySuccessWithData(fileModelService.findAll(Example.of(fileModel)));
+    }
+
+    @PostMapping("/delete_in_recycle_bin")
+    public void deleteFilesInRecycleBin () {
+        FileModel fileModel = new FileModel();
+        fileModel.setDeleted(true);
+        fileModel.setDateOfRecovery(LocalDate.now());
+        List<FileModel> all = fileModelService.findAll(Example.of(fileModel));
+        fileModelService.deleteInBatch(all);
     }
 }

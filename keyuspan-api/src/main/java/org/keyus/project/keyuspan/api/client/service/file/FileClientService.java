@@ -41,4 +41,7 @@ public interface FileClientService {
 
     @PostMapping("/find_all")
     ServerResponse <List<FileModel>> findAll (@RequestBody FileModel fileModel);
+
+    @PostMapping("/delete_in_recycle_bin")
+    void deleteFilesInRecycleBin ();
 }

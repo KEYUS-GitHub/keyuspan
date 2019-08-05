@@ -49,4 +49,6 @@ public interface VirtualFileFolderDao extends JpaRepository<VirtualFolder, Long>
     @Override
     void delete(VirtualFolder virtualFolder);
 
+    @Override
+    void deleteInBatch(Iterable<VirtualFolder> iterable);
 }

@@ -17,6 +17,7 @@
         <module>keyuspan-common</module>
         <module>keyuspan-file-consumer</module>
         <module>keyuspan-folder-consumer</module>
+        <module>keyuspan-task</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

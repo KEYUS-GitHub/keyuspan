@@ -30,4 +30,7 @@ public interface FolderClientService {
 
     @PostMapping("/save_all")
     ServerResponse <List<VirtualFolder>> saveAll (@RequestBody List<VirtualFolder> virtualFolders);
+
+    @PostMapping("/delete_in_recycle_bin")
+    void deleteFoldersInRecycleBin ();
 }

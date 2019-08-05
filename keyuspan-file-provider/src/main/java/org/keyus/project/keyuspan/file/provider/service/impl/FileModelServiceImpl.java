@@ -76,4 +76,9 @@ public class FileModelServiceImpl implements FileModelService {
     public void deleteAll(Iterable<? extends FileModel> iterable) {
         fileModelDao.deleteAll(iterable);
     }
+
+    @Override
+    public void deleteInBatch(Iterable<FileModel> iterable) {
+        fileModelDao.deleteInBatch(iterable);
+    }
 }
