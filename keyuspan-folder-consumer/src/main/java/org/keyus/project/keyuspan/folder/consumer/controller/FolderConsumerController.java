@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author keyus
@@ -111,12 +110,6 @@ public class FolderConsumerController {
 
     @PostMapping("/delete_folder")
     public ServerResponse <VirtualFolderVO> deleteFolder (@RequestParam("id") Long id, HttpSession session) {
-
-        // 本系统中，ID参数如果为0，会导致所有数据递归删除，造成严重破坏
-        // 因此需要检测数值进行保护
-        if (Objects.equals(0L, id)) {
-            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
-        }
 
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         List<VirtualFolder> virtualFolders = new ArrayList<>();

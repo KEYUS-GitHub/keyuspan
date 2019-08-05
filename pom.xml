@@ -18,6 +18,8 @@
         <module>keyuspan-file-consumer</module>
         <module>keyuspan-folder-consumer</module>
         <module>keyuspan-task</module>
+        <module>keyuspan-share-provider</module>
+        <module>keyuspan-share-consumer</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
