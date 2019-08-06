@@ -29,6 +29,5 @@ public class SchTask {
         folderClientService.deleteFoldersInRecycleBin();
         fileClientService.deleteFilesInRecycleBin();
         // TODO: 19-8-5 补充修改会员已经使用的存储空间的实现
-
     }
 }

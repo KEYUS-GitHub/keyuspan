@@ -1,6 +1,9 @@
 package org.keyus.project.keyuspan.api.po;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +14,9 @@ import java.time.LocalDate;
  * @create 2019-08-05  下午1:57
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "share_record")
 public class ShareRecord implements Serializable {
 

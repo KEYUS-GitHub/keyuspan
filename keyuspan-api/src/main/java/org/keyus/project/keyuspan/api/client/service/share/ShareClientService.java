@@ -1,6 +1,10 @@
 package org.keyus.project.keyuspan.api.client.service.share;
 
+import org.keyus.project.keyuspan.api.po.ShareRecord;
+import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author keyus
@@ -9,5 +13,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 @FeignClient(value = "keyuspan-share-provider", fallbackFactory = ShareClientServiceFallbackFactory.class)
 public interface ShareClientService {
 
+    @PostMapping("/save")
+    ServerResponse<ShareRecord> save (@RequestBody ShareRecord record);
 
+    @PostMapping("find_by_url")
+    ServerResponse <ShareRecord> findByUrl (@RequestBody String url);
 }

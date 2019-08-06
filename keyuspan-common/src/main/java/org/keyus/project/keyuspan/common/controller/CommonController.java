@@ -27,7 +27,7 @@ public class CommonController {
      * 仅仅将文本存入session，不输出
      */
     @GetMapping("/create_text")
-    public void createCapTextForMail (HttpSession session) {
+    public void createCapText (HttpSession session) {
         String capText = captchaProducer.createText();
         session.setAttribute(SessionAttributeNameEnum.CAPTCHA_FOR_TEXT.getName(), capText);
     }

@@ -1,9 +1,6 @@
 package org.keyus.project.keyuspan.api.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.keyus.project.keyuspan.api.po.FileModel;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 
@@ -15,6 +12,7 @@ import java.util.List;
  * @create 2019-07-28  下午4:36
  */
 @Data
+@Builder
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor

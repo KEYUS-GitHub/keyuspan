@@ -1,6 +1,7 @@
 package org.keyus.project.keyuspan.api.po;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
  * @create 2019-07-27  下午10:12
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "virtual_folder")

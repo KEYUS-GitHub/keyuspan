@@ -1,6 +1,7 @@
 package org.keyus.project.keyuspan.api.po;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
  * @create 2019-07-22  下午4:04
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "file_model")
@@ -65,4 +67,8 @@ public class FileModel implements Serializable {
     // 是否被删除
     @Column(name = "deleted")
     private Boolean deleted;
+
+    // 下载该文件时提供的key，由ID加密而成
+    @Column(name = "cipher_text")
+    private String cipherText;
 }

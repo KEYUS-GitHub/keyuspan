@@ -36,7 +36,6 @@ public class FolderConsumerController {
     public ServerResponse openFolderById (@RequestParam("id") Long id, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
 
-
         ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(id);
         if (ServerResponse.isSuccess(serverResponse)) {
             if (VirtualFolderUtil.isBelongToThisMember(member, serverResponse.getData())) {
@@ -137,18 +136,6 @@ public class FolderConsumerController {
         ServerResponse<List<FileModel>> response = fileClientService.saveFiles(fileModels);
 
         return ServerResponse.createBySuccessWithData(VirtualFolderVO.getInstance(serverResponse.getData(), response.getData()));
-    }
-
-    @PostMapping("/share_folder")
-    public ServerResponse shareFolder (@RequestParam("id") Long id, HttpSession session) {
-        // TODO: 19-7-30 给他人产生一个共享文件夹的链接
-        return null;
-    }
-
-    @PostMapping("/save_folder_by_share")
-    public ServerResponse <VirtualFolder> saveFolderByShare (@RequestParam("id") Long id, HttpSession session) {
-        // TODO: 19-7-30 通过他人共享的链接来保存分享的文件夹
-        return null;
     }
 
     @PostMapping("/download_folder")

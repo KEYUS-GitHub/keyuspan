@@ -138,16 +138,4 @@ public class FileConsumerController {
         // 更新数据
         return fileClientService.saveFile(fileModel);
     }
-
-    @PostMapping("/share_file")
-    public ServerResponse shareFile (@RequestParam("id") Long id, HttpSession session) {
-        // TODO: 19-7-30 给他人产生一个共享文件夹的链接
-        return null;
-    }
-
-    @PostMapping("/save_file_by_share")
-    public ServerResponse <FileModel> saveFileByShare (@RequestParam("id") Long id, HttpSession session) {
-        // TODO: 19-7-30 通过他人共享的链接来保存分享的文件夹
-        return null;
-    }
 }
