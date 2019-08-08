@@ -23,4 +23,7 @@ public interface MemberClientService {
 
     @PostMapping("/find_one")
     ServerResponse<Member> findOne(@RequestBody Member member);
+
+    @PostMapping("/get_member_id_list")
+    ServerResponse <List<Long>> getMemberIdList ();
 }

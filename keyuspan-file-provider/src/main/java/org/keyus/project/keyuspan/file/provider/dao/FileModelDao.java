@@ -20,6 +20,8 @@ public interface FileModelDao extends JpaRepository<FileModel, Long> {
     @Override
     Optional<FileModel> findById(Long id);
 
+    List<FileModel> findByIdIn (Iterable<Long> iterable);
+
     @Override
     List<FileModel> findAll();
 

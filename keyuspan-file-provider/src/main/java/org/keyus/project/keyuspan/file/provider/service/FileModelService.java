@@ -18,6 +18,8 @@ public interface FileModelService {
 
     Optional<FileModel> findById(Long id);
 
+    List<FileModel> findByIdIn (Iterable<Long> iterable);
+
     List<FileModel> findAll();
 
     <S extends FileModel> List<S> findAll(Example<S> example);

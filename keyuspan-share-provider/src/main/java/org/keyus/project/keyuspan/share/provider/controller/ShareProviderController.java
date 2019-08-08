@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author keyus
@@ -47,5 +48,11 @@ public class ShareProviderController {
         } else {
             return ServerResponse.createBySuccessWithData(all.get(0));
         }
+    }
+
+    @PostMapping("/find_by_id")
+    public ServerResponse <ShareRecord> findById (@RequestBody Long id) {
+        Optional<ShareRecord> optional = shareRecordService.findById(id);
+        return optional.map(ServerResponse::createBySuccessWithData).orElseGet(() -> ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SHARE_RECORD_NOT_EXIST.getMessage()));
     }
 }

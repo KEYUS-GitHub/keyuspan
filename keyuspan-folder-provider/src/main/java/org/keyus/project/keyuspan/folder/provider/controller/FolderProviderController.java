@@ -1,6 +1,7 @@
 package org.keyus.project.keyuspan.folder.provider.controller;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
 import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
@@ -11,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author keyus
@@ -25,6 +26,11 @@ import java.util.Optional;
 public class FolderProviderController {
 
     private final VirtualFolderService virtualFolderService;
+
+    private final MemberClientService memberClientService;
+
+    @Resource(name = "folderProviderExecutor")
+    private ThreadPoolExecutor executor;
 
     @PostMapping("/find_by_id")
     public ServerResponse <VirtualFolder> findById (@RequestParam("id") Long id) {
@@ -53,12 +59,12 @@ public class FolderProviderController {
     }
 
     @PostMapping("/delete_in_recycle_bin")
-    public void deleteFoldersInRecycleBin () {
-        VirtualFolder folder = new VirtualFolder();
-        // 对回收站中的记录真正地执行删除
-        folder.setDeleted(true);
-        folder.setDateOfRecovery(LocalDate.now());
+    public ServerResponse <List<VirtualFolder>> deleteFoldersInRecycleBin () {
+        VirtualFolder folder = VirtualFolder.builder().deleted(true)
+                .dateOfRecovery(LocalDate.now()).build();
+        // 查询
         List<VirtualFolder> all = virtualFolderService.findAll(Example.of(folder));
         virtualFolderService.deleteInBatch(all);
+        return ServerResponse.createBySuccessWithData(all);
     }
 }

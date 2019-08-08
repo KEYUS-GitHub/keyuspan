@@ -23,4 +23,9 @@ public class AppTest {
         String fileName = "keyus.png";
         System.out.println(fileName.substring(fileName.indexOf('.') + 1));
     }
+
+    @Test
+    public void test3() {
+        System.out.println(9 & 1);
+    }
 }

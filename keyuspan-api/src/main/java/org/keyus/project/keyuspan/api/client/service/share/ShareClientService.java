@@ -18,4 +18,7 @@ public interface ShareClientService {
 
     @PostMapping("find_by_url")
     ServerResponse <ShareRecord> findByUrl (@RequestBody String url);
+
+    @PostMapping("/find_by_id")
+    ServerResponse <ShareRecord> findById (@RequestBody Long id);
 }

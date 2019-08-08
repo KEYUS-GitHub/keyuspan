@@ -8,6 +8,7 @@ import org.keyus.project.keyuspan.member.provider.service.MemberService;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,6 +43,16 @@ public class MemberProviderController {
     public ServerResponse <Member> findOne(@RequestBody Member member) {
         Optional<Member> optional = memberService.findOne(Example.of(member));
         // 判断是否存在这样一条数据库中的记录
-        return optional.map(ServerResponse::createBySuccessWithData).orElseGet(ServerResponse::createBySuccessNullValue);
+        return optional.map(ServerResponse::createBySuccessWithData).orElseGet(() -> ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_NOT_EXIST.getMessage()));
+    }
+
+    @PostMapping("/get_member_id_list")
+    public ServerResponse <List<Long>> getMemberIdList () {
+        List<Member> members = memberService.getMembers();
+        List<Long> result = new ArrayList<>();
+        for (Member member : members) {
+            result.add(member.getId());
+        }
+        return ServerResponse.createBySuccessWithData(result);
     }
 }

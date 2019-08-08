@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public interface FileClientService {
     @PostMapping("/find_all")
     ServerResponse <List<FileModel>> findAll (@RequestBody FileModel fileModel);
 
+    @PostMapping("/find_by_id_in")
+    ServerResponse <List<FileModel>> findByIdIn (@RequestBody Iterable<Long> iterable);
+
     @PostMapping("/delete_in_recycle_bin")
-    void deleteFilesInRecycleBin ();
+    ServerResponse <List<FileModel>> deleteFilesInRecycleBin (@RequestBody Long memberId);
 }

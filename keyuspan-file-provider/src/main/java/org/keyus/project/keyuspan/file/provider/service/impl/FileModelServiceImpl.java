@@ -33,6 +33,11 @@ public class FileModelServiceImpl implements FileModelService {
     }
 
     @Override
+    public List<FileModel> findByIdIn(Iterable<Long> iterable) {
+        return fileModelDao.findByIdIn(iterable);
+    }
+
+    @Override
     public List<FileModel> findAll() {
         return fileModelDao.findAll();
     }

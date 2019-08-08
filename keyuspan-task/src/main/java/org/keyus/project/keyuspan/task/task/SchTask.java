@@ -5,8 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.keyus.project.keyuspan.api.client.service.file.FileClientService;
 import org.keyus.project.keyuspan.api.client.service.folder.FolderClientService;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
+import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author keyus
@@ -23,11 +28,21 @@ public class SchTask {
 
     private final MemberClientService memberClientService;
 
+    @Resource(name = "taskServerExecutor")
+    private ThreadPoolExecutor executor;
+
     // 每天凌晨3点的时候，删除数据库中的一些记录
     @Scheduled(cron = "0 0 3 * * ?")
     public void deleteFilesAndFoldersInRecycleBin() {
-        folderClientService.deleteFoldersInRecycleBin();
-        fileClientService.deleteFilesInRecycleBin();
-        // TODO: 19-8-5 补充修改会员已经使用的存储空间的实现
+        // 并行操作
+        executor.execute(folderClientService::deleteFoldersInRecycleBin);
+        // 查询所有会员的ID值
+        ServerResponse<List<Long>> serverResponse = memberClientService.getMemberIdList();
+        List<Long> ids = serverResponse.getData();
+
+        for (Long id : ids) {
+            executor.execute(() -> fileClientService.deleteFilesInRecycleBin(id));
+        }
     }
+
 }
