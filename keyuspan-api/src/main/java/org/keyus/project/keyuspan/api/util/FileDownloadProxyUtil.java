@@ -2,8 +2,8 @@ package org.keyus.project.keyuspan.api.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -18,16 +18,16 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class FileDownloadProxyUtil {
 
-    public static void proxyAndDownload (HttpServletResponse response, String urlAddress, String contentType, String fileName) throws IOException {
+    public static byte[] proxyAndDownload (HttpServletResponse response, String urlAddress, String contentType, String fileName) throws IOException {
         InputStream is = null;
-        ServletOutputStream os = null;
+        ByteArrayOutputStream os = null;
         HttpURLConnection connection = null;
         try {
             URL url = new URL(urlAddress);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
             is = connection.getInputStream();
-            os = response.getOutputStream();
+            os = new ByteArrayOutputStream();
 
             if (contentType != null) {
                 response.setContentType(contentType);
@@ -52,6 +52,7 @@ public class FileDownloadProxyUtil {
                 os.write(buffer, 0, len);
             }
 
+            return os.toByteArray();
         } catch (Exception e) {
             log.error("File Download Proxy URL File error, e = {}", e.getMessage());
             throw e;

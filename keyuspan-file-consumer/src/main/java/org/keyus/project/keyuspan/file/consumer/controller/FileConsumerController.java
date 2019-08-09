@@ -76,11 +76,8 @@ public class FileConsumerController {
     }
 
     @PostMapping("/download_file")
-    public void downloadFile (@RequestParam("key") String key, HttpServletResponse response) throws FileDownloadException, IOException {
-        // TODO: 19-7-30 实现文件下载的业务逻辑，要求是前端通过一个加密的字符串值
-        //  解析出文件模型的ID，然后获取uri，执行下载，前端的请求参数没有文件
-        //  的ID值，而是通过ID值加密出一个字符串值，后端再解密出ID，然后通过代
-        //  理，代替用户的客户端去下载文件，需要检测权限。
+    public byte[] downloadFile (@RequestParam("key") String key, HttpServletResponse response, HttpSession session) throws FileDownloadException, IOException {
+        Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         Long id = PasswordToIdUtil.decrypt(key);
         ServerResponse<FileModel> serverResponse = fileClientService.findById(id);
         if (ServerResponse.isError(serverResponse) || ServerResponse.isNullValue(serverResponse)) {
@@ -88,8 +85,13 @@ public class FileConsumerController {
             throw new FileDownloadException(ErrorMessageEnum.FILE_DOWNLOAD_EXCEPTION.getMessage());
         }
         FileModel fileModel = serverResponse.getData();
-        String url = FileDownloadProxyUtil.getRealUrl(fileClientService.getWebServerUrl(), fileModel.getUri());
-        FileDownloadProxyUtil.proxyAndDownload(response, url, null, fileModel.getFileName());
+        // 文件权限校验，合理的请求才给予下载
+        if (FileModelUtil.isBelongsToMember(member, fileModel)) {
+            String url = FileDownloadProxyUtil.getRealUrl(fileClientService.getWebServerUrl(), fileModel.getUri());
+            return FileDownloadProxyUtil.proxyAndDownload(response, url, null, fileModel.getFileName());
+        }
+        // TODO: 19-7-31 抛出异常之后跳转至一个提示页面
+        throw new FileDownloadException(ErrorMessageEnum.FILE_DOWNLOAD_EXCEPTION.getMessage());
     }
 
     @PostMapping("/get_files_by_folder_id")

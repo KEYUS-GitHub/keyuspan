@@ -138,31 +138,6 @@ public class FolderConsumerController {
         return ServerResponse.createBySuccessWithData(VirtualFolderVO.getInstance(serverResponse.getData(), response.getData()));
     }
 
-    @PostMapping("/download_folder")
-    public ServerResponse downloadFolder (@RequestParam("id") Long id, HttpSession session) {
-        // TODO: 19-7-30 下载一个文件夹下所有的文件及文件夹
-        return null;
-    }
-
-    /**
-     * 以下接口暂时不实现
-     */
-
-    public ServerResponse copyFolder () {
-        // TODO: 19-7-30 有余力的情况下实现文件夹的复制
-        return null;
-    }
-
-    public ServerResponse pasteFolder () {
-        // TODO: 19-7-30 有余力的情况下实现文件夹的粘贴
-        return null;
-    }
-
-    public ServerResponse moveFolder () {
-        // TODO: 19-7-30 有余力的情况下实现文件夹的移动
-        return null;
-    }
-
     /**
      * 使用入参的list递归调用，获取所有的要删除的虚拟文件夹
      */

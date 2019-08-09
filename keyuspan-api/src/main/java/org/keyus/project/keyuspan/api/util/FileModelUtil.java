@@ -2,12 +2,14 @@ package org.keyus.project.keyuspan.api.util;
 
 import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.po.FileModel;
+import org.keyus.project.keyuspan.api.po.Member;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author keyus
@@ -46,6 +48,13 @@ public class FileModelUtil {
             res.add(fileModel);
         }
         return res;
+    }
+
+    public static boolean isBelongsToMember (Member member, FileModel fileModel) {
+        if (member == null || fileModel == null) {
+            return false;
+        }
+        return Objects.equals(member.getId(), fileModel.getMemberId());
     }
 }
 

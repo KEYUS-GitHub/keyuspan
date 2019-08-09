@@ -57,6 +57,7 @@ public class ShareConsumerController {
         ShareRecord.ShareRecordBuilder builder = ShareRecord.builder();
         builder.memberId(member.getId()).capText(capText)
                 .filesIds(String.valueOf(id)).url(url);
+        // -1表示永久分享
         if (days != -1L) {
             builder.dateOfInvalid(LocalDate.now().plusDays(days));
         }
