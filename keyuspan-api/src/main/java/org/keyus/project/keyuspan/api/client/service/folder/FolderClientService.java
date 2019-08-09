@@ -22,6 +22,9 @@ public interface FolderClientService {
     @PostMapping("/find_by_id")
     ServerResponse <VirtualFolder> findById (@RequestParam("id") Long id);
 
+    @PostMapping("/find_by_id_in")
+    ServerResponse <List<VirtualFolder>> findByIdIn (@RequestBody Iterable<Long> iterable);
+
     @PostMapping("/find_all")
     ServerResponse <List<VirtualFolder>> findAll (@RequestBody VirtualFolder virtualFolder);
 

@@ -67,4 +67,9 @@ public class FolderProviderController {
         virtualFolderService.deleteInBatch(all);
         return ServerResponse.createBySuccessWithData(all);
     }
+
+    @PostMapping("/find_by_id_in")
+    public ServerResponse <List<VirtualFolder>> findByIdIn (@RequestBody Iterable<Long> iterable) {
+        return ServerResponse.createBySuccessWithData(virtualFolderService.findByIdIn(iterable));
+    }
 }

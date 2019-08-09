@@ -33,6 +33,11 @@ public class VirtualFolderServiceImpl implements VirtualFolderService {
     }
 
     @Override
+    public List<VirtualFolder> findByIdIn(Iterable<Long> iterable) {
+        return virtualFileFolderDao.findByIdIn(iterable);
+    }
+
+    @Override
     public List<VirtualFolder> findAll() {
         return virtualFileFolderDao.findAll();
     }

@@ -20,6 +20,8 @@ public interface VirtualFileFolderDao extends JpaRepository<VirtualFolder, Long>
     @Override
     Optional<VirtualFolder> findById(Long id);
 
+    List<VirtualFolder> findByIdIn(Iterable<Long> iterable);
+
     @Override
     List<VirtualFolder> findAll();
 

@@ -17,6 +17,8 @@ public interface VirtualFolderService {
 
     Optional<VirtualFolder> findById(Long id);
 
+    List<VirtualFolder> findByIdIn(Iterable<Long> iterable);
+
     List<VirtualFolder> findAll();
 
     List<VirtualFolder> findAll(Sort sort);

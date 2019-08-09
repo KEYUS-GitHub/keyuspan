@@ -24,6 +24,7 @@ public class VirtualFolderVO implements Serializable {
 
     private List<FileModel> files;
 
+    // TODO: 19-8-6 对VO对象进行改造，隐藏敏感信息
     public static VirtualFolderVO getInstance(List<VirtualFolder> virtualFolders, List<FileModel> fileModels) {
         return new VirtualFolderVO(virtualFolders, fileModels);
     }
