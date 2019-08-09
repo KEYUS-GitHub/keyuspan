@@ -10,7 +10,7 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.util.VirtualFolderUtil;
-import org.keyus.project.keyuspan.api.vo.VirtualFolderVO;
+import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +48,7 @@ public class FolderConsumerController {
                 List<VirtualFolder> virtualFolders = folderClientService.findAll(virtualFolder).getData();
                 // 获得该文件夹目录下的所有的文件
                 ServerResponse <List<FileModel>> response = fileClientService.getFilesByFolderId(serverResponse.getData().getId());
-                return ServerResponse.createBySuccessWithData(VirtualFolderVO.getInstance(virtualFolders, response.getData()));
+                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(virtualFolders, response.getData()));
             } else {
                 return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
             }
@@ -108,7 +108,7 @@ public class FolderConsumerController {
     }
 
     @PostMapping("/delete_folder")
-    public ServerResponse <VirtualFolderVO> deleteFolder (@RequestParam("id") Long id, HttpSession session) {
+    public ServerResponse <FolderMessageVO> deleteFolder (@RequestParam("id") Long id, HttpSession session) {
 
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         List<VirtualFolder> virtualFolders = new ArrayList<>();
@@ -135,7 +135,7 @@ public class FolderConsumerController {
         }
         ServerResponse<List<FileModel>> response = fileClientService.saveFiles(fileModels);
 
-        return ServerResponse.createBySuccessWithData(VirtualFolderVO.getInstance(serverResponse.getData(), response.getData()));
+        return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(serverResponse.getData(), response.getData()));
     }
 
     /**

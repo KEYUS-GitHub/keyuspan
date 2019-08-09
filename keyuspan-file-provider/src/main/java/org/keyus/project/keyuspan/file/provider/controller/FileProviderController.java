@@ -121,8 +121,7 @@ public class FileProviderController {
 
             // 修改member的已经使用的空间
             Member member = serverResponse.getData();
-            double size = 0;
-            size = member.getUsedStorageSpace() - future.get();
+            double size = member.getUsedStorageSpace() - future.get();
             member.setUsedStorageSpace(size);
             memberClientService.saveMember(member);// TODO: 19-8-8 重构实现
             session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), member);

@@ -16,16 +16,15 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class VirtualFolderVO implements Serializable {
+public class FolderMessageVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<VirtualFolder> folders;
+    private List<FolderVO> folders;
 
-    private List<FileModel> files;
+    private List<FileModelVO> files;
 
-    // TODO: 19-8-6 对VO对象进行改造，隐藏敏感信息
-    public static VirtualFolderVO getInstance(List<VirtualFolder> virtualFolders, List<FileModel> fileModels) {
-        return new VirtualFolderVO(virtualFolders, fileModels);
+    public static FolderMessageVO getInstance(List<VirtualFolder> virtualFolders, List<FileModel> fileModels) {
+        return new FolderMessageVO(FolderVO.getInstances(virtualFolders), FileModelVO.getInstances(fileModels));
     }
 }

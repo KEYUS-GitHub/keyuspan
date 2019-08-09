@@ -12,7 +12,7 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.ShareRecord;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
-import org.keyus.project.keyuspan.api.vo.VirtualFolderVO;
+import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -100,8 +100,8 @@ public class ShareConsumerController {
     }
 
     @PostMapping("/save_folder_by_share")
-    public ServerResponse <VirtualFolder> saveFolderByShare (@RequestParam("id") Long id, HttpSession session) {
-        // TODO: 19-7-30 通过他人共享的链接来保存分享的文件夹（需要递归操作）
+    public ServerResponse <VirtualFolder> saveFolderByShare (@RequestParam("folder_id") Long folderId, HttpSession session) {
+        // TODO: 19-7-30 通过他人共享的链接来保存分享的文件夹（需要递归操作来保存其子文件夹及文件的数据）
         return null;
     }
 
@@ -146,7 +146,7 @@ public class ShareConsumerController {
 
                 // 等待操作完成
                 latch.await();
-                return ServerResponse.createBySuccessWithData(VirtualFolderVO.getInstance(folders, fileModels));
+                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(folders, fileModels));
             } else {
                 return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.CAPTCHA_CHECK_ERROR.getMessage());
             }
