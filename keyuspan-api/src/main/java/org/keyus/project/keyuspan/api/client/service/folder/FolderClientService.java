@@ -36,4 +36,7 @@ public interface FolderClientService {
 
     @PostMapping("/delete_in_recycle_bin")
     ServerResponse <List<VirtualFolder>> deleteFoldersInRecycleBin ();
+
+    @PostMapping("/get_virtual_path")
+    ServerResponse <String> getVirtualPath(@RequestBody Long id);
 }

@@ -10,8 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author keyus
@@ -85,5 +84,30 @@ public class VirtualFolderServiceImpl implements VirtualFolderService {
     @Override
     public void deleteInBatch(Iterable<VirtualFolder> iterable) {
         virtualFileFolderDao.deleteInBatch(iterable);
+    }
+
+    @Override
+    public String getVirtualPath(Long id) {
+        LinkedList<String> nameList = new LinkedList<>();
+        getVirtualPath(id, nameList);
+        StringBuilder builder = new StringBuilder();
+        for (String name : nameList) {
+            builder.append('/');
+            builder.append(name);
+        }
+        return builder.toString();
+    }
+
+    private void getVirtualPath(Long id, LinkedList<String> nameList) {
+        if (Objects.isNull(id) || Objects.isNull(nameList)) {
+            return;
+        }
+
+        Optional<VirtualFolder> optional = virtualFileFolderDao.findById(id);
+        if (optional.isPresent()) {
+            VirtualFolder folder = optional.get();
+            nameList.addFirst(folder.getVirtualFolderName());
+            getVirtualPath(folder.getFatherFolderId(), nameList);
+        }
     }
 }

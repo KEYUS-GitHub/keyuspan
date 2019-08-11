@@ -11,6 +11,7 @@ import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.util.VirtualFolderUtil;
 import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
+import org.keyus.project.keyuspan.api.vo.FolderVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,16 +40,18 @@ public class FolderConsumerController {
         ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(id);
         if (ServerResponse.isSuccess(serverResponse)) {
             if (VirtualFolderUtil.isBelongToThisMember(member, serverResponse.getData())) {
-                VirtualFolder virtualFolder = new VirtualFolder();
-                virtualFolder.setFatherFolderId(serverResponse.getData().getId());
+                VirtualFolder folder = new VirtualFolder();
+                folder.setFatherFolderId(serverResponse.getData().getId());
                 // 获取未被删除的文件夹
-                virtualFolder.setDeleted(false);
+                folder.setDeleted(false);
 
                 // 获得该文件夹目录下的所有的一级子文件夹
-                List<VirtualFolder> virtualFolders = folderClientService.findAll(virtualFolder).getData();
+                List<VirtualFolder> virtualFolders = folderClientService.findAll(folder).getData();
                 // 获得该文件夹目录下的所有的文件
                 ServerResponse <List<FileModel>> response = fileClientService.getFilesByFolderId(serverResponse.getData().getId());
-                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(virtualFolders, response.getData()));
+                String path = folderClientService.getVirtualPath(id).getData();
+                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(FolderVO.getInstance(serverResponse.getData()),
+                        path, virtualFolders, response.getData()));
             } else {
                 return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
             }
@@ -64,7 +67,7 @@ public class FolderConsumerController {
         if (ServerResponse.isSuccess(serverResponse)) {
             if (VirtualFolderUtil.isBelongToThisMember(member, serverResponse.getData())) {
                 // 创建新文件夹
-                VirtualFolder newVirtualFolder = VirtualFolderUtil.createNewVirtualFolder(member.getId(), id, folderName, serverResponse.getData().getVirtualPath());
+                VirtualFolder newVirtualFolder = VirtualFolderUtil.createNewVirtualFolder(member.getId(), id, folderName);
                 // 保存文件夹记录
                 return folderClientService.save(newVirtualFolder);
             } else {
@@ -86,18 +89,8 @@ public class FolderConsumerController {
         ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(id);
 
         if (ServerResponse.isSuccess(serverResponse) && VirtualFolderUtil.isBelongToThisMember(member, serverResponse.getData())) {
-            // 获取旧的文件夹名和文件夹路径
             VirtualFolder virtualFolder = serverResponse.getData();
-            String virtualFolderName = virtualFolder.getVirtualFolderName();
-            String virtualPath = virtualFolder.getVirtualPath();
-
-            // 修改文件夹名和文件夹路径
-            // TODO: 19-8-2 修改现有的实现方式，此操作还需要
-            //  递归地将所有子孙文件夹的文件夹路径执行修改操作
-            virtualPath = virtualPath.substring(0, virtualPath.length() - virtualFolderName.length());
-            virtualPath = virtualPath + folderName;
             virtualFolder.setVirtualFolderName(folderName);
-            virtualFolder.setVirtualPath(virtualPath);
             virtualFolder.setUpdateDate(LocalDate.now());
 
             // 执行更新
@@ -135,7 +128,8 @@ public class FolderConsumerController {
         }
         ServerResponse<List<FileModel>> response = fileClientService.saveFiles(fileModels);
 
-        return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(serverResponse.getData(), response.getData()));
+        return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(null,
+                null, serverResponse.getData(), response.getData()));
     }
 
     /**

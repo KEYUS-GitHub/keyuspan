@@ -40,10 +40,6 @@ public class VirtualFolder implements Serializable {
     @Column(name = "virtual_folder_name")
     private String virtualFolderName;
 
-    // 虚拟文件夹的路径
-    @Column(name = "virtual_path")
-    private String virtualPath;
-
     // 修改日期
     @Column(name = "update_date")
     private LocalDate updateDate;

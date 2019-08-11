@@ -146,7 +146,7 @@ public class ShareConsumerController {
 
                 // 等待操作完成
                 latch.await();
-                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(folders, fileModels));
+                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(null, null, folders, fileModels));
             } else {
                 return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.CAPTCHA_CHECK_ERROR.getMessage());
             }

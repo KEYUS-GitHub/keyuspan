@@ -72,4 +72,9 @@ public class FolderProviderController {
     public ServerResponse <List<VirtualFolder>> findByIdIn (@RequestBody Iterable<Long> iterable) {
         return ServerResponse.createBySuccessWithData(virtualFolderService.findByIdIn(iterable));
     }
+
+    @PostMapping("/get_virtual_path")
+    public ServerResponse <String> getVirtualPath(@RequestBody Long id) {
+        return ServerResponse.createBySuccessWithData(virtualFolderService.getVirtualPath(id));
+    }
 }

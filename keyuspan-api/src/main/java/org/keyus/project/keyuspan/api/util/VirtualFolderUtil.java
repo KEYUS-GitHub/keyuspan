@@ -20,12 +20,11 @@ public class VirtualFolderUtil {
         return Objects.equals(member.getId(), virtualFolder.getMemberId());
     }
 
-    public static VirtualFolder createNewVirtualFolder (Long memberId, Long fatherFolderId, String folderName, String fatherFolderVirtualPath) {
+    public static VirtualFolder createNewVirtualFolder (Long memberId, Long fatherFolderId, String folderName) {
         VirtualFolder newVirtualFolder = new VirtualFolder();
         newVirtualFolder.setMemberId(memberId);
         newVirtualFolder.setFatherFolderId(fatherFolderId);
         newVirtualFolder.setVirtualFolderName(folderName);
-        newVirtualFolder.setVirtualPath(fatherFolderVirtualPath + '/' + folderName);
         newVirtualFolder.setUpdateDate(LocalDate.now());
         return newVirtualFolder;
     }

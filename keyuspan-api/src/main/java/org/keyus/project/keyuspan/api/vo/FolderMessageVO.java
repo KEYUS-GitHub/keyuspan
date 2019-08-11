@@ -20,11 +20,19 @@ public class FolderMessageVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    // 当前的文件夹的信息
+    private FolderVO currentFolder;
+
+    // 当前文件夹所在的虚拟路径
+    private String currentPath;
+
+    // 当前文件夹下的子文件夹的list
     private List<FolderVO> folders;
 
+    // 当前文件夹下的所有文件的list
     private List<FileModelVO> files;
 
-    public static FolderMessageVO getInstance(List<VirtualFolder> virtualFolders, List<FileModel> fileModels) {
-        return new FolderMessageVO(FolderVO.getInstances(virtualFolders), FileModelVO.getInstances(fileModels));
+    public static FolderMessageVO getInstance(FolderVO currentFolder, String currentPath, List<VirtualFolder> virtualFolders, List<FileModel> fileModels) {
+        return new FolderMessageVO(currentFolder, currentPath, FolderVO.getInstances(virtualFolders), FileModelVO.getInstances(fileModels));
     }
 }
