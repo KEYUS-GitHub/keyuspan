@@ -100,9 +100,10 @@ public class ShareConsumerController {
     }
 
     @PostMapping("/save_folder_by_share")
-    public ServerResponse <VirtualFolder> saveFolderByShare (@RequestParam("folder_id") Long folderId, HttpSession session) {
-        // TODO: 19-7-30 通过他人共享的链接来保存分享的文件夹（需要递归操作来保存其子文件夹及文件的数据）
-        return null;
+    public ServerResponse saveFolderByShare (@RequestParam("folder_id") Long folderId, @RequestParam("father_folder_id") Long fatherFolderId, HttpSession session) {
+        Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
+        saveFolderUseShare(folderId, fatherFolderId, member.getId());
+        return ServerResponse.createBySuccessWithoutData();
     }
 
     @GetMapping("/open_share/{url}/{cap_text}")
@@ -155,4 +156,61 @@ public class ShareConsumerController {
         }
     }
 
+    // 根据ID保存一个被分享文件夹的主逻辑
+    private void saveFolderUseShare (Long folderId, Long fatherFolderId, Long memberId) {
+        if (Objects.isNull(folderId) || Objects.isNull(fatherFolderId) || Objects.isNull(memberId)) {
+            return;
+        }
+
+        ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(folderId);
+        if (ServerResponse.isSuccess(serverResponse)) {
+            VirtualFolder folder = serverResponse.getData();
+            VirtualFolder save = VirtualFolder.builder().memberId(memberId)
+                    .fatherFolderId(fatherFolderId).deleted(false)
+                    .updateDate(LocalDate.now())
+                    .virtualFolderName(folder.getVirtualFolderName())
+                    .build();
+            ServerResponse<VirtualFolder> response = folderClientService.save(save);
+            VirtualFolder fatherFolder = response.getData();
+
+            executor.execute(() -> {
+                FileModel selectFile = FileModel.builder()
+                        .folderId(folderId)
+                        .deleted(false)
+                        .build();
+
+                ServerResponse<List<FileModel>> fileAll = fileClientService.findAll(selectFile);
+                if (ServerResponse.isSuccess(fileAll)) {
+                    List<FileModel> allData = fileAll.getData();
+                    for (FileModel fm : allData) {
+                        fm.setFolderId(fatherFolder.getId());
+                        fm.setId(null);
+                        fm.setDeleted(false);
+                        fm.setMemberId(memberId);
+                    }
+                    fileClientService.saveFiles(allData);
+                }
+            });
+
+            executor.execute(() -> {
+                VirtualFolder selectFolder = VirtualFolder.builder()
+                        .fatherFolderId(folderId)
+                        .deleted(false)
+                        .build();
+
+                ServerResponse<List<VirtualFolder>> all = folderClientService.findAll(selectFolder);
+                if (ServerResponse.isSuccess(all)) {
+                    List<VirtualFolder> allData = all.getData();
+                    for (VirtualFolder vf : allData) {
+                        vf.setFatherFolderId(fatherFolder.getId());
+                        vf.setId(null);
+                        vf.setDeleted(false);
+                        vf.setMemberId(memberId);
+                        executor.execute(() -> saveFolderUseShare(vf.getId(), vf.getFatherFolderId(), memberId));
+                    }
+                    folderClientService.saveAll(allData);
+                }
+            });
+        }
+    }
 }
