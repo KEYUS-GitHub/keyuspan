@@ -30,12 +30,9 @@ public interface FileModelService {
 
     <S extends FileModel> Page<S> findAll(Example<S> example, Pageable pageable);
 
-
     <S extends FileModel> S save(S s);
 
-
     <S extends FileModel> List<S> saveAll(Iterable<S> iterable);
-
 
     void delete(FileModel fileModel);
 
