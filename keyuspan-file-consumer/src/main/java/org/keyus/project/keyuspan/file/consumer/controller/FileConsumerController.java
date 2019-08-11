@@ -81,7 +81,6 @@ public class FileConsumerController {
         Long id = PasswordToIdUtil.decrypt(key);
         ServerResponse<FileModel> serverResponse = fileClientService.findById(id);
         if (ServerResponse.isError(serverResponse) || ServerResponse.isNullValue(serverResponse)) {
-            // TODO: 19-7-31 抛出异常之后跳转至一个提示页面（结合前端实现）
             throw new FileDownloadException(ErrorMessageEnum.FILE_DOWNLOAD_EXCEPTION.getMessage());
         }
         FileModel fileModel = serverResponse.getData();
@@ -90,7 +89,6 @@ public class FileConsumerController {
             String url = FileDownloadProxyUtil.getRealUrl(fileClientService.getWebServerUrl(), fileModel.getUri());
             return FileDownloadProxyUtil.proxyAndDownload(response, url, null, fileModel.getFileName());
         }
-        // TODO: 19-7-31 抛出异常之后跳转至一个提示页面（结合前端实现）
         throw new FileDownloadException(ErrorMessageEnum.FILE_DOWNLOAD_EXCEPTION.getMessage());
     }
 

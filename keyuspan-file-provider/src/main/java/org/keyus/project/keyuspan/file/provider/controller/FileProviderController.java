@@ -2,7 +2,6 @@ package org.keyus.project.keyuspan.file.provider.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
 import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
@@ -123,9 +122,10 @@ public class FileProviderController {
             Member member = serverResponse.getData();
             double size = member.getUsedStorageSpace() - future.get();
             member.setUsedStorageSpace(size);
-            memberClientService.saveMember(member);// TODO: 19-8-8 重构实现
-            session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), member);
-
+            ServerResponse<Member> response = memberClientService.saveMember(member);
+            if (ServerResponse.isSuccess(response)) {
+                session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), response.getData());
+            }
             return ServerResponse.createBySuccessWithData(result);
         } else {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_NOT_EXIST.getMessage());
