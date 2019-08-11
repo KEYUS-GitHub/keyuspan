@@ -55,4 +55,9 @@ public class ShareProviderController {
         Optional<ShareRecord> optional = shareRecordService.findById(id);
         return optional.map(ServerResponse::createBySuccessWithData).orElseGet(() -> ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SHARE_RECORD_NOT_EXIST.getMessage()));
     }
+
+    @PostMapping("/delete_in_batch")
+    public void deleteInBatch (@RequestBody Iterable<ShareRecord> records) {
+        shareRecordService.deleteInBatch(records);
+    }
 }
