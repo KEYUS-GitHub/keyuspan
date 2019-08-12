@@ -1,10 +1,9 @@
 package org.keyus.project.keyuspan.member.provider.service;
 
 import org.keyus.project.keyuspan.api.po.Member;
-import org.springframework.data.domain.Example;
+import org.keyus.project.keyuspan.api.util.ServerResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author keyus
@@ -12,9 +11,11 @@ import java.util.Optional;
  */
 public interface MemberService {
 
-    List<Member> getMembers();
+    ServerResponse<List<Member>> getMembers();
 
-    <S extends Member> S save(S entity);
+    ServerResponse <Member> saveMember(Member member);
 
-    <S extends Member> Optional<S> findOne(Example<S> example);
+    ServerResponse <Member> findOne(Member member);
+
+    ServerResponse <List<Long>> getMemberIdList ();
 }
