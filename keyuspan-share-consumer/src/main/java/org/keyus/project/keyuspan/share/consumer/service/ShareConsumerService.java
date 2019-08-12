@@ -17,7 +17,7 @@ public interface ShareConsumerService {
 
     ServerResponse <FileModel> saveFileByShare (Long fileId, Long folderId, Member member);
 
-    ServerResponse shareFolder (Long id, Integer days, HttpSession session);
+    ServerResponse <ShareRecord> shareFolder (Long id, Integer days, HttpSession session);
 
     ServerResponse saveFolderByShare (Long folderId, Long fatherFolderId, Member member);
 

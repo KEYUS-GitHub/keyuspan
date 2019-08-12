@@ -4,6 +4,7 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @author keyus
@@ -11,9 +12,9 @@ import javax.servlet.http.HttpSession;
  */
 public interface MemberConsumerService {
 
-    ServerResponse getMembers();
+    ServerResponse <List<Member>> getMembers();
 
-    ServerResponse register(Member member, String key, String capText);
+    ServerResponse <Member> register(Member member, String key, String capText);
 
-    ServerResponse login(HttpSession session, Member member, String key);
+    ServerResponse <Member> login(HttpSession session, Member member, String key);
 }

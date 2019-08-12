@@ -6,6 +6,7 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
+import org.keyus.project.keyuspan.api.vo.FolderVO;
 import org.keyus.project.keyuspan.folder.consumer.service.FolderConsumerService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,20 +31,32 @@ public class FolderConsumerController {
     }
 
     @PostMapping("/create_folder")
-    public ServerResponse <VirtualFolder> createFolder (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
+    public ServerResponse createFolder (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
-        return folderConsumerService.createFolder(id, folderName, member);
+        ServerResponse<VirtualFolder> serverResponse = folderConsumerService.createFolder(id, folderName, member);
+        if (ServerResponse.isSuccess(serverResponse)) {
+            return ServerResponse.createBySuccessWithData(FolderVO.getInstance(serverResponse.getData()));
+        }
+        return serverResponse;
     }
 
     @PostMapping("/create_main_folder")
-    public ServerResponse <VirtualFolder> createMainFolder (@RequestParam("memberId") Long memberId) {
-        return folderConsumerService.createMainFolder(memberId);
+    public ServerResponse createMainFolder (@RequestParam("memberId") Long memberId) {
+        ServerResponse<VirtualFolder> serverResponse = folderConsumerService.createMainFolder(memberId);
+        if (ServerResponse.isSuccess(serverResponse)) {
+            return ServerResponse.createBySuccessWithData(FolderVO.getInstance(serverResponse.getData()));
+        }
+        return serverResponse;
     }
 
     @PostMapping("/update_folder_name")
-    public ServerResponse <VirtualFolder> updateFolderName (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
+    public ServerResponse updateFolderName (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
-        return folderConsumerService.updateFolderName(id, folderName, member);
+        ServerResponse<VirtualFolder> serverResponse = folderConsumerService.updateFolderName(id, folderName, member);
+        if (ServerResponse.isSuccess(serverResponse)) {
+            return ServerResponse.createBySuccessWithData(FolderVO.getInstance(serverResponse.getData()));
+        }
+        return serverResponse;
     }
 
     @PostMapping("/delete_folder")

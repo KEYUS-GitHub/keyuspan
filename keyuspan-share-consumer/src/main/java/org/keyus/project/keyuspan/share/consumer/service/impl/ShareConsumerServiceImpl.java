@@ -83,7 +83,7 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
     }
 
     @Override
-    public ServerResponse shareFolder (Long id, Integer days, HttpSession session) {
+    public ServerResponse <ShareRecord> shareFolder (Long id, Integer days, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         // 本次分享产生的URL的值，使用UUID避免重复
         String url = UUID.randomUUID().toString();

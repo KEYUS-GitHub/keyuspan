@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,12 +30,12 @@ public class MemberConsumerServiceImpl implements MemberConsumerService {
     private final FolderClientService folderClientService;
 
     @Override
-    public ServerResponse getMembers() {
+    public ServerResponse <List<Member>> getMembers() {
         return memberClientService.getMembers();
     }
 
     @Override
-    public ServerResponse register(Member member, String key, String capText) {
+    public ServerResponse <Member> register(Member member, String key, String capText) {
         // 验证码校验
         if (Objects.equals(key, capText)) {
             // 构建查询对象
@@ -67,7 +68,7 @@ public class MemberConsumerServiceImpl implements MemberConsumerService {
     }
 
     @Override
-    public ServerResponse login(HttpSession session, Member member, String key) {
+    public ServerResponse <Member> login(HttpSession session, Member member, String key) {
 
         // 获取并校验验证码的值
         String capText = (String) session.getAttribute(SessionAttributeNameEnum.CAPTCHA_FOR_IMAGE.getName());
