@@ -1,13 +1,8 @@
 package org.keyus.project.keyuspan.folder.provider.service;
 
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
+import org.keyus.project.keyuspan.api.util.ServerResponse;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author keyus
@@ -15,29 +10,17 @@ import java.util.Optional;
  */
 public interface VirtualFolderService {
 
-    Optional<VirtualFolder> findById(Long id);
+    ServerResponse<VirtualFolder> findById (Long id);
 
-    List<VirtualFolder> findByIdIn(Iterable<Long> iterable);
+    ServerResponse <List<VirtualFolder>> findAll (VirtualFolder virtualFolder);
 
-    List<VirtualFolder> findAll();
+    ServerResponse <VirtualFolder> save (VirtualFolder virtualFolder);
 
-    List<VirtualFolder> findAll(Sort sort);
+    ServerResponse <List<VirtualFolder>> saveAll (List<VirtualFolder> virtualFolders);
 
-    <S extends VirtualFolder> List<S> findAll(Example<S> example);
+    ServerResponse <List<VirtualFolder>> deleteFoldersInRecycleBin ();
 
-    <S extends VirtualFolder> List<S> findAll(Example<S> example, Sort sort);
-
-    <S extends VirtualFolder> Page<S> findAll(Example<S> example, Pageable pageable);
-
-    <S extends VirtualFolder> S save(S s);
-
-    <S extends VirtualFolder> List<S> saveAll(Iterable<S> iterable);
-
-    void deleteById(Long id);
-
-    void delete(VirtualFolder virtualFolder);
-
-    void deleteInBatch(Iterable<VirtualFolder> iterable);
+    ServerResponse <List<VirtualFolder>> findByIdIn (Iterable<Long> iterable);
 
     String getVirtualPath (Long id);
 }
