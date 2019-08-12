@@ -41,6 +41,7 @@ public class FileServiceImpl implements FileService {
      * @return 文件访问地址
      * @throws IOException
      */
+    @Override
     public String uploadFile(MultipartFile file) throws IOException {
         StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), FilenameUtils.getExtension(file.getOriginalFilename()),null);
         return getResAccessUri(storePath);
@@ -52,6 +53,7 @@ public class FileServiceImpl implements FileService {
      * @return 文件访问地址的集合
      * @throws IOException
      */
+    @Override
     public String[] uploadFiles(List<MultipartFile> files) throws IOException {
         int size = files.size();
         String[] uris = new String[size];
@@ -69,6 +71,7 @@ public class FileServiceImpl implements FileService {
      * @return 文件访问地址
      * @throws IOException
      */
+    @Override
     public String uploadFile(File file) throws IOException {
         FileInputStream inputStream = new FileInputStream (file);
         StorePath storePath = storageClient.uploadFile(inputStream, file.length(), FilenameUtils.getExtension(file.getName()),null);
@@ -81,6 +84,7 @@ public class FileServiceImpl implements FileService {
      * @param fileExtension
      * @return
      */
+    @Override
     public String uploadFile(String content, String fileExtension) {
         byte[] buff = content.getBytes(Charsets.UTF_8);
         ByteArrayInputStream stream = new ByteArrayInputStream(buff);
@@ -88,16 +92,12 @@ public class FileServiceImpl implements FileService {
         return getResAccessUri(storePath);
     }
 
-    // 封装图片完整URL地址
-    private String getResAccessUri(StorePath storePath) {
-        return storePath.getFullPath();
-    }
-
     /**
      * 删除文件
      * @param fileUrl 文件访问地址
      * @return
      */
+    @Override
     public void deleteFile(String fileUrl) {
         if (StringUtils.isEmpty(fileUrl)) {
             return;
@@ -113,5 +113,10 @@ public class FileServiceImpl implements FileService {
     @Override
     public String getWebServerUrl() {
         return fdfsWebServer.getWebServerUrl();
+    }
+
+    // 封装图片完整URL地址
+    private String getResAccessUri(StorePath storePath) {
+        return storePath.getFullPath();
     }
 }

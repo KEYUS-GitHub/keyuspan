@@ -1,17 +1,24 @@
 package org.keyus.project.keyuspan.file.provider.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
+import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
+import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
 import org.keyus.project.keyuspan.api.po.FileModel;
+import org.keyus.project.keyuspan.api.po.Member;
+import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.file.provider.dao.FileModelDao;
 import org.keyus.project.keyuspan.file.provider.service.FileModelService;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author keyus
@@ -19,71 +26,85 @@ import java.util.Optional;
  */
 @Service
 @Transactional
+@AllArgsConstructor
 public class FileModelServiceImpl implements FileModelService {
 
     private final FileModelDao fileModelDao;
 
-    public FileModelServiceImpl(FileModelDao fileModelDao) {
-        this.fileModelDao = fileModelDao;
+    private final MemberClientService memberClientService;
+
+    @Resource(name = "fileProviderExecutor")
+    private ThreadPoolExecutor executor;
+
+    @Override
+    public ServerResponse<FileModel> findById (Long id) {
+        Optional<FileModel> optional = fileModelDao.findById(id);
+        return optional.map(ServerResponse::createBySuccessWithData).orElseGet(ServerResponse::createBySuccessNullValue);
     }
 
     @Override
-    public Optional<FileModel> findById(Long id) {
-        return fileModelDao.findById(id);
+    public ServerResponse <List<FileModel>> findByIdIn (Iterable<Long> iterable) {
+        return ServerResponse.createBySuccessWithData(fileModelDao.findByIdIn(iterable));
     }
 
     @Override
-    public List<FileModel> findByIdIn(Iterable<Long> iterable) {
-        return fileModelDao.findByIdIn(iterable);
+    public ServerResponse <FileModel> saveFile (FileModel fileModel) {
+        return ServerResponse.createBySuccessWithData(fileModelDao.save(fileModel));
     }
 
     @Override
-    public List<FileModel> findAll() {
-        return fileModelDao.findAll();
+    public ServerResponse <List<FileModel>> saveFiles (List<FileModel> list) {
+        if (Objects.isNull(list)) {
+            return ServerResponse.createBySuccessWithData(Collections.emptyList());
+        }
+        // 执行更新操作
+        List<FileModel> all = fileModelDao.saveAll(list);
+        return ServerResponse.createBySuccessWithData(all);
     }
 
     @Override
-    public <S extends FileModel> List<S> findAll(Example<S> example) {
-        return fileModelDao.findAll(example);
+    public ServerResponse <List<FileModel>> findAll (FileModel fileModel) {
+        return ServerResponse.createBySuccessWithData(fileModelDao.findAll(Example.of(fileModel)));
     }
 
     @Override
-    public List<FileModel> findAll(Sort sort) {
-        return fileModelDao.findAll(sort);
+    public ServerResponse <List<FileModel>> getFilesByFolderId(Long id) {
+        FileModel fileModel = FileModel.builder()
+                .id(id).deleted(false).build();
+        return ServerResponse.createBySuccessWithData(fileModelDao.findAll(Example.of(fileModel)));
     }
 
     @Override
-    public <S extends FileModel> List<S> findAll(Example<S> example, Sort sort) {
-        return fileModelDao.findAll(example, sort);
-    }
+    public ServerResponse <List<FileModel>> deleteFilesInRecycleBin (Long memberId , HttpSession session) throws ExecutionException, InterruptedException {
+        ServerResponse<Member> serverResponse = memberClientService.findOne(Member.builder().id(memberId).build());
+        if (ServerResponse.isSuccess(serverResponse)) {
+            final List<FileModel> result = new ArrayList<>();
+            Future<Double> future = executor.submit(() -> {
+                FileModel fileModel = FileModel.builder().memberId(memberId).deleted(true)
+                        .dateOfRecovery(LocalDate.now()).build();
+                // 根据会员ID查询该会员需要删除的文件模型记录
+                List<FileModel> all = fileModelDao.findAll(Example.of(fileModel));
+                double size = 0.0;
+                for (FileModel fm : all) {
+                    size += fm.getSize();
+                }
+                result.addAll(all);
+                // 执行删除
+                executor.execute(() -> fileModelDao.deleteInBatch(all));
+                return size;
+            });
 
-    @Override
-    public <S extends FileModel> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return fileModelDao.findAll(example, pageable);
-    }
-
-    @Override
-    public <S extends FileModel> S save(S s) {
-        return fileModelDao.save(s);
-    }
-
-    @Override
-    public <S extends FileModel> List<S> saveAll(Iterable<S> iterable) {
-        return fileModelDao.saveAll(iterable);
-    }
-
-    @Override
-    public void delete(FileModel fileModel) {
-        fileModelDao.delete(fileModel);
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends FileModel> iterable) {
-        fileModelDao.deleteAll(iterable);
-    }
-
-    @Override
-    public void deleteInBatch(Iterable<FileModel> iterable) {
-        fileModelDao.deleteInBatch(iterable);
+            // 修改member的已经使用的空间
+            Member member = serverResponse.getData();
+            double size = member.getUsedStorageSpace() - future.get();
+            member.setUsedStorageSpace(size);
+            ServerResponse<Member> response = memberClientService.saveMember(member);
+            if (ServerResponse.isSuccess(response)) {
+                session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), response.getData());
+            }
+            return ServerResponse.createBySuccessWithData(result);
+        } else {
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_NOT_EXIST.getMessage());
+        }
     }
 }

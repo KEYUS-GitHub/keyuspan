@@ -1,13 +1,10 @@
 package org.keyus.project.keyuspan.file.provider.service;
 
 import org.keyus.project.keyuspan.api.po.FileModel;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
+import org.keyus.project.keyuspan.api.util.ServerResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author keyus
@@ -16,27 +13,18 @@ import java.util.Optional;
  */
 public interface FileModelService {
 
-    Optional<FileModel> findById(Long id);
+    ServerResponse<FileModel> findById (Long id);
 
-    List<FileModel> findByIdIn (Iterable<Long> iterable);
+    ServerResponse <List<FileModel>> findByIdIn (Iterable<Long> iterable);
 
-    List<FileModel> findAll();
+    ServerResponse <FileModel> saveFile (FileModel fileModel);
 
-    <S extends FileModel> List<S> findAll(Example<S> example);
+    ServerResponse <List<FileModel>> saveFiles (List<FileModel> list);
 
-    List<FileModel> findAll(Sort sort);
+    ServerResponse <List<FileModel>> findAll (FileModel fileModel);
 
-    <S extends FileModel> List<S> findAll(Example<S> example, Sort sort);
+    ServerResponse <List<FileModel>> getFilesByFolderId(Long id);
 
-    <S extends FileModel> Page<S> findAll(Example<S> example, Pageable pageable);
+    ServerResponse <List<FileModel>> deleteFilesInRecycleBin (Long memberId , HttpSession session) throws ExecutionException, InterruptedException;
 
-    <S extends FileModel> S save(S s);
-
-    <S extends FileModel> List<S> saveAll(Iterable<S> iterable);
-
-    void delete(FileModel fileModel);
-
-    void deleteAll(Iterable<? extends FileModel> iterable);
-
-    void deleteInBatch(Iterable<FileModel> iterable);
 }

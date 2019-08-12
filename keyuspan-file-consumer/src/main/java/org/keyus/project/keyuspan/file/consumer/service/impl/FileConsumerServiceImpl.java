@@ -62,7 +62,7 @@ public class FileConsumerServiceImpl implements FileConsumerService {
         // 计算空间总和
         double fileSize = 0.0;
         for (FileModel fileModel : fileModels) {
-            fileSize += fileModel.getSize() / 1024;
+            fileSize += (fileModel.getSize() / 1024);
         }
 
         if (fileSize + member.getUsedStorageSpace() > member.getTotalStorageSpace()) {
