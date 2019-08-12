@@ -1,10 +1,9 @@
 package org.keyus.project.keyuspan.share.provider.service;
 
 import org.keyus.project.keyuspan.api.po.ShareRecord;
-import org.springframework.data.domain.Example;
+import org.keyus.project.keyuspan.api.util.ServerResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author keyus
@@ -12,17 +11,13 @@ import java.util.Optional;
  */
 public interface ShareRecordService {
 
-    Optional<ShareRecord> findById(Long id);
+    ServerResponse<ShareRecord> save (ShareRecord record);
 
-    <S extends ShareRecord> List<S> findAll(Example<S> example);
+    ServerResponse <List<ShareRecord>> findAll (ShareRecord record);
 
-    <S extends ShareRecord> S save(S entity);
+    ServerResponse <ShareRecord> findByUrl (String url);
 
-    <S extends ShareRecord> List<S> saveAll(Iterable<S> entities);
+    ServerResponse <ShareRecord> findById (Long id);
 
-    void delete(ShareRecord entity);
-
-    void deleteById(Long id);
-
-    void deleteInBatch(Iterable<ShareRecord> entities);
+    void deleteInBatch (Iterable<ShareRecord> records);
 }

@@ -1,7 +1,9 @@
 package org.keyus.project.keyuspan.share.provider.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
 import org.keyus.project.keyuspan.api.po.ShareRecord;
+import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.share.provider.dao.ShareRecordDao;
 import org.keyus.project.keyuspan.share.provider.service.ShareRecordService;
 import org.springframework.data.domain.Example;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -23,37 +26,39 @@ public class ShareRecordServiceImpl implements ShareRecordService {
     private final ShareRecordDao shareRecordDao;
 
     @Override
-    public Optional<ShareRecord> findById(Long id) {
-        return shareRecordDao.findById(id);
+    public ServerResponse<ShareRecord> save (ShareRecord record) {
+        ShareRecord save = shareRecordDao.save(record);
+        if (Objects.isNull(save.getId())) {
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SAVE_FAIL_EXCEPTION.getMessage());
+        } else {
+            return ServerResponse.createBySuccessWithData(save);
+        }
     }
 
     @Override
-    public <S extends ShareRecord> List<S> findAll(Example<S> example) {
-        return shareRecordDao.findAll(example);
+    public ServerResponse <List<ShareRecord>> findAll (ShareRecord record) {
+        return ServerResponse.createBySuccessWithData(shareRecordDao.findAll(Example.of(record)));
     }
 
     @Override
-    public <S extends ShareRecord> S save(S entity) {
-        return shareRecordDao.save(entity);
+    public ServerResponse <ShareRecord> findByUrl (String url) {
+        ShareRecord record = ShareRecord.builder().url(url).build();
+        List<ShareRecord> all = shareRecordDao.findAll(Example.of(record));
+        if (all.size() == 0) {
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SHARE_RECORD_NOT_EXIST.getMessage());
+        } else {
+            return ServerResponse.createBySuccessWithData(all.get(0));
+        }
     }
 
     @Override
-    public <S extends ShareRecord> List<S> saveAll(Iterable<S> entities) {
-        return shareRecordDao.saveAll(entities);
+    public ServerResponse <ShareRecord> findById (Long id) {
+        Optional<ShareRecord> optional = shareRecordDao.findById(id);
+        return optional.map(ServerResponse::createBySuccessWithData).orElseGet(() -> ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SHARE_RECORD_NOT_EXIST.getMessage()));
     }
 
     @Override
-    public void delete(ShareRecord entity) {
-        shareRecordDao.delete(entity);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        shareRecordDao.deleteById(id);
-    }
-
-    @Override
-    public void deleteInBatch(Iterable<ShareRecord> entities) {
-        shareRecordDao.deleteInBatch(entities);
+    public void deleteInBatch (Iterable<ShareRecord> records) {
+        shareRecordDao.deleteInBatch(records);
     }
 }
