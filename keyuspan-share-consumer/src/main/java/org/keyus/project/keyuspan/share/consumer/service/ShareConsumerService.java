@@ -13,11 +13,11 @@ import javax.servlet.http.HttpSession;
  */
 public interface ShareConsumerService {
 
-    ServerResponse<ShareRecord> shareFile (Long id, Integer days, HttpSession session);
+    ServerResponse<ShareRecord> shareFile (Long id, Integer days, HttpSession session) throws Throwable;
 
     ServerResponse <FileModel> saveFileByShare (Long fileId, Long folderId, Member member);
 
-    ServerResponse <ShareRecord> shareFolder (Long id, Integer days, HttpSession session);
+    ServerResponse <ShareRecord> shareFolder (Long id, Integer days, HttpSession session) throws Throwable;
 
     ServerResponse saveFolderByShare (Long folderId, Long fatherFolderId, Member member);
 

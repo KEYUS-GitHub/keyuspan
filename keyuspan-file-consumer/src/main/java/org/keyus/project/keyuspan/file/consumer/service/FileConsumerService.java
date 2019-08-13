@@ -16,11 +16,11 @@ import java.util.List;
  */
 public interface FileConsumerService {
 
-    ServerResponse<FileModel> uploadFile(MultipartFile file, Member member, Long folderId) throws IOException;
+    ServerResponse<FileModel> uploadFile(MultipartFile file, Member member, Long folderId) throws Throwable;
 
-    ServerResponse <List<FileModel>> uploadFiles (MultipartFile[] files, Long folderId, Member member) throws Exception;
+    ServerResponse <List<FileModel>> uploadFiles (MultipartFile[] files, Long folderId, Member member) throws Throwable;
 
-    byte[] downloadFile (String key, HttpServletResponse response, Member member) throws FileDownloadException, IOException;
+    byte[] downloadFile (String key, HttpServletResponse response, Member member) throws Throwable;
 
     ServerResponse <List<FileModel>> getFilesByFolderId(Long id);
 

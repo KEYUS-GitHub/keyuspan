@@ -28,5 +28,5 @@ public interface ShareClientService {
     ServerResponse <List<ShareRecord>> findAll (@RequestBody ShareRecord record);
 
     @PostMapping("/delete_in_batch")
-    void deleteInBatch (@RequestBody Iterable<ShareRecord> records);
+    void deleteInBatch (@RequestBody Iterable<ShareRecord> records) throws Throwable;
 }

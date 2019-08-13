@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface CommonClientService {
 
     @GetMapping("/create_text")
-    void createCapText ();
+    void createCapText () throws Throwable;
 }

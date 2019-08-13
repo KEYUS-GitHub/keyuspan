@@ -12,6 +12,8 @@ public class CommonClientServiceFallbackFactory implements FallbackFactory<Commo
 
     @Override
     public CommonClientService create(Throwable throwable) {
-        return null;
+        return () -> {
+            throw throwable;
+        };
     }
 }

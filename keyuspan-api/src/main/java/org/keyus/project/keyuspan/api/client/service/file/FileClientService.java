@@ -19,10 +19,10 @@ import java.util.List;
 public interface FileClientService {
 
     @PostMapping("/upload_file")
-    String uploadFile (@RequestBody MultipartFile file) throws IOException;
+    String uploadFile (@RequestBody MultipartFile file) throws Throwable;
 
     @PostMapping("/upload_files")
-    String[] uploadFiles (@RequestBody List<MultipartFile> files) throws IOException;
+    String[] uploadFiles (@RequestBody List<MultipartFile> files) throws Throwable;
 
     @PostMapping("/find_by_id")
     ServerResponse <FileModel> findById (@RequestParam("id") Long id);
@@ -37,7 +37,7 @@ public interface FileClientService {
     ServerResponse <List<FileModel>> saveFiles (List<FileModel> list);
 
     @PostMapping("/get_web_server_url")
-    String getWebServerUrl();
+    String getWebServerUrl() throws Throwable;
 
     @PostMapping("/find_all")
     ServerResponse <List<FileModel>> findAll (@RequestBody FileModel fileModel);

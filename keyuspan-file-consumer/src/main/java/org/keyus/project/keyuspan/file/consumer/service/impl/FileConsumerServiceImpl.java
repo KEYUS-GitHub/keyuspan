@@ -37,7 +37,7 @@ public class FileConsumerServiceImpl implements FileConsumerService {
     private final MemberClientService memberClientService;
 
     @Override
-    public ServerResponse<FileModel> uploadFile(MultipartFile file, Member member, Long folderId) throws IOException {
+    public ServerResponse<FileModel> uploadFile(MultipartFile file, Member member, Long folderId) throws Throwable {
         String uri = fileClientService.uploadFile(file);
         FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri, folderId);
         double fileSize = fileModel.getSize() / 1024;
@@ -54,7 +54,7 @@ public class FileConsumerServiceImpl implements FileConsumerService {
     }
 
     @Override
-    public ServerResponse <List<FileModel>> uploadFiles (MultipartFile[] files, Long folderId, Member member) throws Exception {
+    public ServerResponse <List<FileModel>> uploadFiles (MultipartFile[] files, Long folderId, Member member) throws Throwable {
         List<MultipartFile> list = new ArrayList<>(Arrays.asList(files));
         String[] uris = fileClientService.uploadFiles(list);
         List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris, folderId);
@@ -73,7 +73,7 @@ public class FileConsumerServiceImpl implements FileConsumerService {
     }
 
     @Override
-    public byte[] downloadFile(String key, HttpServletResponse response, Member member) throws FileDownloadException, IOException {
+    public byte[] downloadFile(String key, HttpServletResponse response, Member member) throws Throwable {
         Long id = PasswordToIdUtil.decrypt(key);
         ServerResponse<FileModel> serverResponse = fileClientService.findById(id);
         if (ServerResponse.isError(serverResponse) || ServerResponse.isNullValue(serverResponse)) {

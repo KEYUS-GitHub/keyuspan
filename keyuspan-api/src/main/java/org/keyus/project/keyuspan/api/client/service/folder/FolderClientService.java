@@ -17,7 +17,7 @@ import java.util.List;
 public interface FolderClientService {
 
     @PostMapping("/create_main_folder")
-    ServerResponse<VirtualFolder> createMainFolder (@RequestParam("memberId") Long memberId);
+    ServerResponse <VirtualFolder> createMainFolder (@RequestParam("memberId") Long memberId);
 
     @PostMapping("/find_by_id")
     ServerResponse <VirtualFolder> findById (@RequestParam("id") Long id);

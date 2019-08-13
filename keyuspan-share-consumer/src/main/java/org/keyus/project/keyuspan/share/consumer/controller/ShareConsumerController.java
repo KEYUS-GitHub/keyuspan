@@ -24,7 +24,7 @@ public class ShareConsumerController {
     private final ShareConsumerService shareConsumerService;
 
     @PostMapping("/share_file")
-    public ServerResponse shareFile (@RequestParam("id") Long id, @RequestParam("period_of_validity") Integer days, HttpSession session) {
+    public ServerResponse shareFile (@RequestParam("id") Long id, @RequestParam("period_of_validity") Integer days, HttpSession session) throws Throwable {
         ServerResponse<ShareRecord> serverResponse = shareConsumerService.shareFile(id, days, session);
         if (ServerResponse.isSuccess(serverResponse)) {
             return ServerResponse.createBySuccessWithData(ShareRecordVO.getInstance(serverResponse.getData()));
@@ -43,7 +43,7 @@ public class ShareConsumerController {
     }
 
     @PostMapping("/share_folder")
-    public ServerResponse shareFolder (@RequestParam("id") Long id, @RequestParam("period_of_validity") Integer days, HttpSession session) {
+    public ServerResponse shareFolder (@RequestParam("id") Long id, @RequestParam("period_of_validity") Integer days, HttpSession session) throws Throwable {
         ServerResponse<ShareRecord> serverResponse = shareConsumerService.shareFolder(id, days, session);
         if (ServerResponse.isSuccess(serverResponse)) {
             return ServerResponse.createBySuccessWithData(ShareRecordVO.getInstance(serverResponse.getData()));

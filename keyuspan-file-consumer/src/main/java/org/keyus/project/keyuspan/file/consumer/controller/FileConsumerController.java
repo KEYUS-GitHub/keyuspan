@@ -29,7 +29,7 @@ public class FileConsumerController {
     private final FileConsumerService fileConsumerService;
 
     @PostMapping("/upload_file")
-    public ServerResponse uploadFile (@RequestParam("file") MultipartFile file, @RequestParam("folder_id") Long folderId, HttpSession session) throws IOException {
+    public ServerResponse uploadFile (@RequestParam("file") MultipartFile file, @RequestParam("folder_id") Long folderId, HttpSession session) throws Throwable {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         ServerResponse<FileModel> serverResponse = fileConsumerService.uploadFile(file, member, folderId);
         if (ServerResponse.isSuccess(serverResponse)) {
@@ -40,7 +40,7 @@ public class FileConsumerController {
     }
 
     @PostMapping("/upload_files")
-    public ServerResponse uploadFiles (@RequestParam("files") MultipartFile[] files, @RequestParam("folder_id") Long folderId, HttpSession session) throws Exception {
+    public ServerResponse uploadFiles (@RequestParam("files") MultipartFile[] files, @RequestParam("folder_id") Long folderId, HttpSession session) throws Throwable {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         ServerResponse<List<FileModel>> serverResponse = fileConsumerService.uploadFiles(files, folderId, member);
         if (ServerResponse.isSuccess(serverResponse)) {
@@ -51,7 +51,7 @@ public class FileConsumerController {
     }
 
     @PostMapping("/download_file")
-    public byte[] downloadFile (@RequestParam("key") String key, HttpServletResponse response, HttpSession session) throws FileDownloadException, IOException {
+    public byte[] downloadFile (@RequestParam("key") String key, HttpServletResponse response, HttpSession session) throws Throwable {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         return fileConsumerService.downloadFile(key, response, member);
     }

@@ -48,7 +48,7 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
     private ThreadPoolExecutor executor;
 
     @Override
-    public ServerResponse<ShareRecord> shareFile (Long id, Integer days, HttpSession session) {
+    public ServerResponse<ShareRecord> shareFile (Long id, Integer days, HttpSession session) throws Throwable {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         // 本次分享产生的URL的值，使用UUID避免重复
         String url = UUID.randomUUID().toString();
@@ -83,7 +83,7 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
     }
 
     @Override
-    public ServerResponse <ShareRecord> shareFolder (Long id, Integer days, HttpSession session) {
+    public ServerResponse <ShareRecord> shareFolder (Long id, Integer days, HttpSession session) throws Throwable {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         // 本次分享产生的URL的值，使用UUID避免重复
         String url = UUID.randomUUID().toString();

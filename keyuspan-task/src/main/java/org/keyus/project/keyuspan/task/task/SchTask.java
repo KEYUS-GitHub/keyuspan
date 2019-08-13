@@ -38,7 +38,7 @@ public class SchTask {
 
     // 每天凌晨1点的时候，删除那些过期的分享记录
     @Scheduled(cron = "0 0 1 * * ?")
-    public void deleteShareRecordInRecycleBin () {
+    public void deleteShareRecordInRecycleBin () throws Throwable {
         ShareRecord record = ShareRecord.builder()
                 .dateOfInvalid(LocalDate.now())
                 .build();
