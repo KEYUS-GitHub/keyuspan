@@ -14,11 +14,26 @@ spring:
     name: keyuspan-gateway
   cloud:
     gateway:
+      globalcors: # 跨域访问的处理
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://127.0.0.1"
+            allowedMethods:
+              - GET
+              - POST
       discovery:
         locator:
           lower-case-service-id: true # 启动服务名称全小写的映射方式，自动映射下的访问方式为：http://网关地址/服务名称（小写）/**
           enabled: true # 自动映射
       routes:
+        - id: common
+          uri: lb://keyuspan-common  # uri：用lb:// + eureka中注册的微服务名称
+          predicates:
+            - Method=GET,POST
+          #            - Path=/**
+          #          filters:                     #filters：过滤规则
+          #            - StripPrefix=1
+
         - id: member
           uri: lb://keyuspan-member-consumer  # uri：用lb:// + eureka中注册的微服务名称
           predicates:

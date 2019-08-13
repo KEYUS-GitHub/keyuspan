@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.keyus.project.keyuspan.api.enums.ErrorMessageEnum;
+import org.keyus.project.keyuspan.api.enums.HttpHeaderValueEnum;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -42,7 +44,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 // 输出信息到错误页面
                 DataBuffer buffer = response.bufferFactory().wrap(date);
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
+                response.getHeaders().add(HttpHeaders.CONTENT_TYPE, HttpHeaderValueEnum.APPLICATION_JSON.getValue());
                 return response.writeWith(Mono.just(buffer));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
