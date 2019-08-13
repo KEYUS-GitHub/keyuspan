@@ -22,7 +22,8 @@ public enum ErrorMessageEnum {
     SYSTEM_EXCEPTION ("系统出现异常，请稍后再试"),
     MEMBER_REGISTER_FAIL ("注册会员失败"),
     FILE_DOWNLOAD_EXCEPTION ("文件下载异常"),
-    NETWORK_EXCEPTION ("网络异常");
+    NETWORK_EXCEPTION ("网络异常"),
+    UNAUTHORIZED ("未经授权");
 
     @Getter private String message;
 }
