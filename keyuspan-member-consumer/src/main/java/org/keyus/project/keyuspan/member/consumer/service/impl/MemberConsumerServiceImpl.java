@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.member.consumer.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.client.service.folder.FolderClientService;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
@@ -21,7 +22,6 @@ import java.util.Objects;
  * @create 2019-08-12  下午2:22
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class MemberConsumerServiceImpl implements MemberConsumerService {
 
@@ -34,6 +34,8 @@ public class MemberConsumerServiceImpl implements MemberConsumerService {
         return ServerResponse.createBySuccessWithData(memberClientService.getMembers());
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <Member> register(Member member, String key, String capText) {
         // 验证码校验

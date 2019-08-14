@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.folder.consumer.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.client.service.file.FileClientService;
 import org.keyus.project.keyuspan.api.client.service.folder.FolderClientService;
@@ -9,7 +10,6 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.util.VirtualFolderUtil;
-import org.keyus.project.keyuspan.api.vo.FileModelVO;
 import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
 import org.keyus.project.keyuspan.api.vo.FolderVO;
 import org.keyus.project.keyuspan.folder.consumer.service.FolderConsumerService;
@@ -25,7 +25,6 @@ import java.util.Objects;
  * @create 2019-08-12  下午1:34
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class FolderConsumerServiceImpl implements FolderConsumerService {
 
@@ -54,6 +53,8 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
         }
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <VirtualFolder> createFolder (Long id, String folderName, Member member) {
         VirtualFolder virtualFolder = folderClientService.findById(id);
@@ -67,11 +68,15 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
         }
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <VirtualFolder> createMainFolder (Long memberId) {
         return ServerResponse.createBySuccessWithData(folderClientService.save(VirtualFolderUtil.createMainVirtualFolder(memberId)));
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <FolderVO> updateFolderName (Long id, String folderName, Member member) {
         VirtualFolder virtualFolder = folderClientService.findById(id);
@@ -85,6 +90,8 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
         }
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <FolderMessageVO> deleteFolder (Long id, Member member) {
         List<VirtualFolder> virtualFolders = new ArrayList<>();

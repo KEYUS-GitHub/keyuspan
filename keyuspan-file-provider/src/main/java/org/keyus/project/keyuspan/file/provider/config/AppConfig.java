@@ -1,6 +1,8 @@
 package org.keyus.project.keyuspan.file.provider.config;
 
+import com.codingapi.tx.config.service.TxManagerTxUrlService;
 import com.github.tobato.fastdfs.FdfsClientConfig;
+import org.keyus.project.keyuspan.api.lcn.service.TxManagerTxUrlServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableMBeanExport;
@@ -26,6 +28,11 @@ public class AppConfig {
         return new ThreadPoolExecutor(50, 100,
                 10, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(1024));
+    }
+
+    @Bean
+    public TxManagerTxUrlService txUrlService() {
+        return new TxManagerTxUrlServiceImpl();
     }
 
 }

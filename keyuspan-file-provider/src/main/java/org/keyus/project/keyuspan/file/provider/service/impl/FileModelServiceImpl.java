@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.file.provider.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
 import org.keyus.project.keyuspan.api.enums.SessionAttributeNameEnum;
@@ -23,7 +24,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @create 2019-07-22  下午10:05
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class FileModelServiceImpl implements FileModelService {
 
@@ -44,11 +44,15 @@ public class FileModelServiceImpl implements FileModelService {
         return fileModelDao.findByIdIn(iterable);
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public FileModel saveFile (FileModel fileModel) {
         return fileModelDao.save(fileModel);
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public List<FileModel> saveFiles (List<FileModel> list) {
         if (Objects.isNull(list)) {
@@ -70,6 +74,8 @@ public class FileModelServiceImpl implements FileModelService {
         return fileModelDao.findAll(Example.of(fileModel));
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public List<FileModel> deleteFilesInRecycleBin (Long memberId , HttpSession session) throws ExecutionException, InterruptedException {
         Member member = memberClientService.findOne(Member.builder().id(memberId).build());

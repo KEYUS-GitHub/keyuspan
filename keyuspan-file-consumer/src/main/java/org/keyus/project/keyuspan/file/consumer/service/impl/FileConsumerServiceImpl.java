@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.file.consumer.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.client.service.file.FileClientService;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
@@ -28,7 +29,6 @@ import java.util.Objects;
  * @create 2019-08-11  下午11:19
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class FileConsumerServiceImpl implements FileConsumerService {
 
@@ -36,6 +36,8 @@ public class FileConsumerServiceImpl implements FileConsumerService {
 
     private final MemberClientService memberClientService;
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse<FileModel> uploadFile(MultipartFile file, Member member, Long folderId) throws Throwable {
         // 计算MB的值
@@ -54,6 +56,8 @@ public class FileConsumerServiceImpl implements FileConsumerService {
         return ServerResponse.createBySuccessWithData(save);
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <List<FileModel>> uploadFiles (MultipartFile[] files, Long folderId, Member member) throws Throwable {
         List<MultipartFile> list = new ArrayList<>(Arrays.asList(files));
@@ -70,6 +74,9 @@ public class FileConsumerServiceImpl implements FileConsumerService {
 
         String[] uris = fileClientService.uploadFiles(list);
         List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris, folderId);
+        Double size = fileSize + member.getUsedStorageSpace();
+        member.setUsedStorageSpace(size);
+        memberClientService.saveMember(member);
         return ServerResponse.createBySuccessWithData(fileClientService.saveFiles(fileModels));
     }
 
@@ -90,6 +97,8 @@ public class FileConsumerServiceImpl implements FileConsumerService {
         return ServerResponse.createBySuccessWithData(fileClientService.getFilesByFolderId(id));
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <FileModel> updateFileName (Long id, String newFileName) {
         FileModel fileModel = fileClientService.findById(id);
@@ -109,6 +118,8 @@ public class FileConsumerServiceImpl implements FileConsumerService {
         return ServerResponse.createBySuccessWithData(fileClientService.saveFile(fileModel));
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <FileModel> deleteFileById (Long id, Member member) {
         FileModel fileModel = fileClientService.findById(id);

@@ -41,7 +41,34 @@
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
         <junit.version>4.12</junit.version>
         <lombok.version>1.16.18</lombok.version>
+        <lcn.last.version>4.1.0</lcn.last.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.codingapi</groupId>
+            <artifactId>transaction-springcloud</artifactId>
+            <version>${lcn.last.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi</groupId>
+            <artifactId>tx-plugins-db</artifactId>
+            <version>${lcn.last.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>

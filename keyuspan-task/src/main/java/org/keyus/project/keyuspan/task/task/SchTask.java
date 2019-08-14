@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.task.task;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keyus.project.keyuspan.api.client.service.file.FileClientService;
@@ -7,9 +8,9 @@ import org.keyus.project.keyuspan.api.client.service.folder.FolderClientService;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
 import org.keyus.project.keyuspan.api.client.service.share.ShareClientService;
 import org.keyus.project.keyuspan.api.po.ShareRecord;
-import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
@@ -38,6 +39,8 @@ public class SchTask {
     private ThreadPoolExecutor executor;
 
     // 每天凌晨1点的时候，删除那些过期的分享记录
+    @TxTransaction(isStart = true)
+    @Transactional
     @Scheduled(cron = "0 0 1 * * ?")
     public void deleteShareRecordInRecycleBin () throws Throwable {
         ShareRecord record = ShareRecord.builder()
@@ -48,6 +51,8 @@ public class SchTask {
     }
 
     // 每天凌晨3点的时候，删除数据库中的一些记录
+    @TxTransaction(isStart = true)
+    @Transactional
     @Scheduled(cron = "0 0 3 * * ?")
     public void deleteFilesAndFoldersInRecycleBin() {
         // 并行操作

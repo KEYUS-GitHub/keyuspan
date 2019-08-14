@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.share.consumer.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.client.service.common.CommonClientService;
 import org.keyus.project.keyuspan.api.client.service.file.FileClientService;
@@ -33,7 +34,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @create 2019-08-12  下午2:35
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class ShareConsumerServiceImpl implements ShareConsumerService {
 
@@ -48,6 +48,8 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
     @Resource(name = "shareConsumerExecutor")
     private ThreadPoolExecutor executor;
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse<ShareRecord> shareFile (Long id, Integer days, HttpSession session) throws Throwable {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
@@ -67,6 +69,8 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
         return ServerResponse.createBySuccessWithData(shareClientService.save(record));
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <FileModelVO> saveFileByShare (Long fileId, Long folderId, Member member) {
         FileModel fileModel = fileClientService.findById(fileId);
@@ -78,6 +82,8 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
         return ServerResponse.createBySuccessWithData(FileModelVO.getInstance(fileClientService.saveFile(newFileModel)));
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse <ShareRecord> shareFolder (Long id, Integer days, HttpSession session) throws Throwable {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
@@ -96,6 +102,8 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
         return ServerResponse.createBySuccessWithData(shareClientService.save(record));
     }
 
+    @TxTransaction(isStart = true)
+    @Transactional
     @Override
     public ServerResponse saveFolderByShare (Long folderId, Long fatherFolderId, Member member) {
         saveFolderUseShare(folderId, fatherFolderId, member.getId());

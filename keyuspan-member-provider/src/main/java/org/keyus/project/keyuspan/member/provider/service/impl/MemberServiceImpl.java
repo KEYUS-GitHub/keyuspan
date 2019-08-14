@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.member.provider.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.member.provider.dao.MemberDao;
@@ -17,7 +18,6 @@ import java.util.Optional;
  * @create 2019-07-16  下午10:12
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
@@ -28,6 +28,8 @@ public class MemberServiceImpl implements MemberService {
         return memberDao.findAll();
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public Member saveMember(Member member) {
         return memberDao.save(member);

@@ -1,5 +1,7 @@
 package org.keyus.project.keyuspan.task.config;
 
+import com.codingapi.tx.config.service.TxManagerTxUrlService;
+import org.keyus.project.keyuspan.api.lcn.service.TxManagerTxUrlServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,5 +21,10 @@ public class AppConfig {
         return new ThreadPoolExecutor(100, 200,
                 10, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(1024));
+    }
+
+    @Bean
+    public TxManagerTxUrlService txUrlService() {
+        return new TxManagerTxUrlServiceImpl();
     }
 }

@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.share.provider.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.po.ShareRecord;
 import org.keyus.project.keyuspan.share.provider.dao.ShareRecordDao;
@@ -16,12 +17,13 @@ import java.util.Optional;
  * @create 2019-08-05  下午2:26
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class ShareRecordServiceImpl implements ShareRecordService {
 
     private final ShareRecordDao shareRecordDao;
 
+    @TxTransaction
+    @Transactional
     @Override
     public ShareRecord save (ShareRecord record) {
         return shareRecordDao.save(record);
@@ -45,6 +47,8 @@ public class ShareRecordServiceImpl implements ShareRecordService {
         return optional.orElseGet(ShareRecord::new);
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public void deleteInBatch (Iterable<ShareRecord> records) {
         shareRecordDao.deleteInBatch(records);

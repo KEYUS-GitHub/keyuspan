@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.folder.provider.service.impl;
 
+import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.folder.provider.dao.VirtualFileFolderDao;
@@ -16,7 +17,6 @@ import java.util.*;
  * @create 2019-07-28  下午3:35
  */
 @Service
-@Transactional
 @AllArgsConstructor
 public class VirtualFolderServiceImpl implements VirtualFolderService {
 
@@ -33,17 +33,22 @@ public class VirtualFolderServiceImpl implements VirtualFolderService {
         return virtualFileFolderDao.findAll(Example.of(virtualFolder));
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public VirtualFolder save (VirtualFolder virtualFolder) {
-        VirtualFolder save = virtualFileFolderDao.save(virtualFolder);
-        return save;
+        return virtualFileFolderDao.save(virtualFolder);
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public List<VirtualFolder> saveAll (List<VirtualFolder> virtualFolders) {
         return virtualFileFolderDao.saveAll(virtualFolders);
     }
 
+    @TxTransaction
+    @Transactional
     @Override
     public List<VirtualFolder> deleteFoldersInRecycleBin () {
         VirtualFolder folder = VirtualFolder.builder().deleted(true)
