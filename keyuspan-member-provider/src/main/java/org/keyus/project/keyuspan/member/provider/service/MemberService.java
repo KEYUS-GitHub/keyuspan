@@ -1,7 +1,6 @@
 package org.keyus.project.keyuspan.member.provider.service;
 
 import org.keyus.project.keyuspan.api.po.Member;
-import org.keyus.project.keyuspan.api.util.ServerResponse;
 
 import java.util.List;
 
@@ -11,11 +10,11 @@ import java.util.List;
  */
 public interface MemberService {
 
-    ServerResponse<List<Member>> getMembers();
+    List<Member> getMembers();
 
-    ServerResponse <Member> saveMember(Member member);
+    Member saveMember(Member member);
 
-    ServerResponse <Member> findOne(Member member);
+    Member findOne(Member member);
 
-    ServerResponse <List<Long>> getMemberIdList ();
+    List<Long> getMemberIdList ();
 }

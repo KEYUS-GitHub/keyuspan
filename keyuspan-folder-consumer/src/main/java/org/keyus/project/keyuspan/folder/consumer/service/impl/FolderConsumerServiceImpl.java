@@ -9,6 +9,7 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.util.VirtualFolderUtil;
+import org.keyus.project.keyuspan.api.vo.FileModelVO;
 import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
 import org.keyus.project.keyuspan.api.vo.FolderVO;
 import org.keyus.project.keyuspan.folder.consumer.service.FolderConsumerService;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author keyus
@@ -32,63 +34,54 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
     private final FileClientService fileClientService;
 
     @Override
-    public ServerResponse openFolderById (Long id, Member member) {
-        ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(id);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            if (VirtualFolderUtil.isBelongToThisMember(member, serverResponse.getData())) {
-                VirtualFolder folder = new VirtualFolder();
-                folder.setFatherFolderId(serverResponse.getData().getId());
-                // 获取未被删除的文件夹
-                folder.setDeleted(false);
+    public ServerResponse <FolderMessageVO> openFolderById (Long id, Member member) {
+        VirtualFolder virtualFolder = folderClientService.findById(id);
+        if (VirtualFolderUtil.isBelongToThisMember(member, virtualFolder)) {
+            VirtualFolder folder = new VirtualFolder();
+            folder.setFatherFolderId(virtualFolder.getId());
+            // 获取未被删除的文件夹
+            folder.setDeleted(false);
 
-                // 获得该文件夹目录下的所有的一级子文件夹
-                List<VirtualFolder> virtualFolders = folderClientService.findAll(folder).getData();
-                // 获得该文件夹目录下的所有的文件
-                ServerResponse <List<FileModel>> response = fileClientService.getFilesByFolderId(serverResponse.getData().getId());
-                String path = folderClientService.getVirtualPath(id).getData();
-                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(FolderVO.getInstance(serverResponse.getData()),
-                        path, virtualFolders, response.getData()));
-            } else {
-                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
-            }
+            // 获得该文件夹目录下的所有的一级子文件夹
+            List<VirtualFolder> virtualFolders = folderClientService.findAll(folder);
+            // 获得该文件夹目录下的所有的文件
+            List<FileModel> fileModels = fileClientService.getFilesByFolderId(virtualFolder.getId());
+            String path = folderClientService.getVirtualPath(id);
+            return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(FolderVO.getInstance(virtualFolder),
+                    path, virtualFolders, fileModels));
         } else {
-            return serverResponse;
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
         }
     }
 
     @Override
     public ServerResponse <VirtualFolder> createFolder (Long id, String folderName, Member member) {
-        ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(id);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            if (VirtualFolderUtil.isBelongToThisMember(member, serverResponse.getData())) {
-                // 创建新文件夹
-                VirtualFolder newVirtualFolder = VirtualFolderUtil.createNewVirtualFolder(member.getId(), id, folderName);
-                // 保存文件夹记录
-                return folderClientService.save(newVirtualFolder);
-            } else {
-                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
-            }
+        VirtualFolder virtualFolder = folderClientService.findById(id);
+        if (VirtualFolderUtil.isBelongToThisMember(member, virtualFolder)) {
+            // 创建新文件夹
+            VirtualFolder newVirtualFolder = VirtualFolderUtil.createNewVirtualFolder(member.getId(), id, folderName);
+            // 保存文件夹记录
+            return ServerResponse.createBySuccessWithData(folderClientService.save(newVirtualFolder));
         } else {
-            return serverResponse;
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
         }
     }
 
     @Override
     public ServerResponse <VirtualFolder> createMainFolder (Long memberId) {
-        return folderClientService.save(VirtualFolderUtil.createMainVirtualFolder(memberId));
+        return ServerResponse.createBySuccessWithData(folderClientService.save(VirtualFolderUtil.createMainVirtualFolder(memberId)));
     }
 
     @Override
-    public ServerResponse <VirtualFolder> updateFolderName (Long id, String folderName, Member member) {
-        ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(id);
+    public ServerResponse <FolderVO> updateFolderName (Long id, String folderName, Member member) {
+        VirtualFolder virtualFolder = folderClientService.findById(id);
 
-        if (ServerResponse.isSuccess(serverResponse) && VirtualFolderUtil.isBelongToThisMember(member, serverResponse.getData())) {
-            VirtualFolder virtualFolder = serverResponse.getData();
+        if (!Objects.isNull(virtualFolder) && VirtualFolderUtil.isBelongToThisMember(member, virtualFolder)) {
             virtualFolder.setVirtualFolderName(folderName);
             virtualFolder.setUpdateDate(LocalDate.now());
 
             // 执行更新
-            return folderClientService.save(virtualFolder);
+            return ServerResponse.createBySuccessWithData(FolderVO.getInstance(folderClientService.save(virtualFolder)));
         } else {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FOLDER_NOT_EXIST.getMessage());
         }
@@ -113,16 +106,16 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
         }
 
         // 对虚拟文件夹保存更新
-        ServerResponse<List<VirtualFolder>> serverResponse = folderClientService.saveAll(virtualFolders);
+        List<VirtualFolder> folders = folderClientService.saveAll(virtualFolders);
 
         for (FileModel fileModel : fileModels) {
             fileModel.setDeleted(true);
             fileModel.setDateOfRecovery(collectDate);
         }
-        ServerResponse<List<FileModel>> response = fileClientService.saveFiles(fileModels);
+        List<FileModel> fileModelList = fileClientService.saveFiles(fileModels);
 
         return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(null,
-                null, serverResponse.getData(), response.getData()));
+                null, folders, fileModelList));
     }
 
     /**
@@ -135,7 +128,7 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
                 .deleted(false)
                 .build();
         // 查询子目录的待删除的虚拟目录
-        List<VirtualFolder> all = folderClientService.findAll(folder).getData();
+        List<VirtualFolder> all = folderClientService.findAll(folder);
         list.addAll(all);
 
         for (VirtualFolder vf : all) {
@@ -147,9 +140,7 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
      * 通过入参的list和目录的ID获取待删除的文件
      */
     private void getFileModelForDelete (List<FileModel> list, Long id) {
-        ServerResponse<List<FileModel>> response = fileClientService.getFilesByFolderId(id);
-        if (ServerResponse.isSuccess(response)) {
-            list.addAll(response.getData());
-        }
+        List<FileModel> fileModelList = fileClientService.getFilesByFolderId(id);
+        list.addAll(fileModelList);
     }
 }

@@ -25,7 +25,7 @@ public class FolderConsumerController {
     private final FolderConsumerService folderConsumerService;
 
     @PostMapping("/open_folder")
-    public ServerResponse openFolderById (@RequestParam("id") Long id, HttpSession session) {
+    public ServerResponse <FolderMessageVO> openFolderById (@RequestParam("id") Long id, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
         return folderConsumerService.openFolderById(id, member);
     }
@@ -50,13 +50,9 @@ public class FolderConsumerController {
     }
 
     @PostMapping("/update_folder_name")
-    public ServerResponse updateFolderName (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
+    public ServerResponse <FolderVO> updateFolderName (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
-        ServerResponse<VirtualFolder> serverResponse = folderConsumerService.updateFolderName(id, folderName, member);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            return ServerResponse.createBySuccessWithData(FolderVO.getInstance(serverResponse.getData()));
-        }
-        return serverResponse;
+        return folderConsumerService.updateFolderName(id, folderName, member);
     }
 
     @PostMapping("/delete_folder")

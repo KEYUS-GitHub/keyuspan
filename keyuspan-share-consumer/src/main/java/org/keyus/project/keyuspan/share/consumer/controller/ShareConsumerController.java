@@ -33,13 +33,9 @@ public class ShareConsumerController {
     }
 
     @PostMapping("/save_file_by_share")
-    public ServerResponse saveFileByShare (@RequestParam("file_id") Long fileId, @RequestParam("folder_id") Long folderId, HttpSession session) {
+    public ServerResponse <FileModelVO> saveFileByShare (@RequestParam("file_id") Long fileId, @RequestParam("folder_id") Long folderId, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
-        ServerResponse<FileModel> serverResponse = shareConsumerService.saveFileByShare(fileId, folderId, member);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            return ServerResponse.createBySuccessWithData(FileModelVO.getInstance(serverResponse.getData()));
-        }
-        return serverResponse;
+        return shareConsumerService.saveFileByShare(fileId, folderId, member);
     }
 
     @PostMapping("/share_folder")

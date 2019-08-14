@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author keyus
@@ -45,7 +46,7 @@ public class FileConsumerServiceImpl implements FileConsumerService {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.OUT_OF_MEMBER_STORAGE_SPACE.getMessage());
         }
         // 否则
-        FileModel save = fileClientService.saveFile(fileModel).getData();
+        FileModel save = fileClientService.saveFile(fileModel);
         // 计算已经使用的size，单位是KB
         Double size = fileSize + member.getUsedStorageSpace();
         member.setUsedStorageSpace(size);
@@ -69,17 +70,13 @@ public class FileConsumerServiceImpl implements FileConsumerService {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.OUT_OF_MEMBER_STORAGE_SPACE.getMessage());
         }
 
-        return fileClientService.saveFiles(fileModels);
+        return ServerResponse.createBySuccessWithData(fileClientService.saveFiles(fileModels));
     }
 
     @Override
     public byte[] downloadFile(String key, HttpServletResponse response, Member member) throws Throwable {
         Long id = PasswordToIdUtil.decrypt(key);
-        ServerResponse<FileModel> serverResponse = fileClientService.findById(id);
-        if (ServerResponse.isError(serverResponse) || ServerResponse.isNullValue(serverResponse)) {
-            throw new FileDownloadException(ErrorMessageEnum.FILE_DOWNLOAD_EXCEPTION.getMessage());
-        }
-        FileModel fileModel = serverResponse.getData();
+        FileModel fileModel = fileClientService.findById(id);
         // 文件权限校验，合理的请求才给予下载
         if (FileModelUtil.isBelongsToMember(member, fileModel)) {
             String url = FileDownloadProxyUtil.getRealUrl(fileClientService.getWebServerUrl(), fileModel.getUri());
@@ -90,19 +87,15 @@ public class FileConsumerServiceImpl implements FileConsumerService {
 
     @Override
     public ServerResponse <List<FileModel>> getFilesByFolderId(Long id) {
-        return fileClientService.getFilesByFolderId(id);
+        return ServerResponse.createBySuccessWithData(fileClientService.getFilesByFolderId(id));
     }
 
     @Override
     public ServerResponse <FileModel> updateFileName (Long id, String newFileName) {
-        ServerResponse<FileModel> response = fileClientService.findById(id);
-        if (ServerResponse.isError(response)) {
-            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SYSTEM_EXCEPTION.getMessage());
-        } else if (ServerResponse.isNullValue(response)) {
+        FileModel fileModel = fileClientService.findById(id);
+        if (Objects.isNull(fileModel)) {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FILE_NOT_EXIST.getMessage());
         }
-        // 获取文件扩展名
-        FileModel fileModel = response.getData();
         // 截取文件扩展名（不含有.）
         String fileExtension = newFileName.substring(newFileName.indexOf('.') + 1);
 
@@ -113,24 +106,21 @@ public class FileConsumerServiceImpl implements FileConsumerService {
         // 修改文件的修改日期
         fileModel.setUpdateDate(LocalDate.now());
         // 更新数据
-        return fileClientService.saveFile(fileModel);
+        return ServerResponse.createBySuccessWithData(fileClientService.saveFile(fileModel));
     }
 
     @Override
     public ServerResponse <FileModel> deleteFileById (Long id, Member member) {
-        ServerResponse<FileModel> response = fileClientService.findById(id);
-        if (ServerResponse.isError(response)) {
-            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SYSTEM_EXCEPTION.getMessage());
-        } else if (ServerResponse.isNullValue(response)) {
+        FileModel fileModel = fileClientService.findById(id);
+        if (Objects.isNull(fileModel)) {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.FILE_NOT_EXIST.getMessage());
         }
         // 获取该会员回收站保留文件的天数
         Integer collectionDays = member.getGarbageCollectionDays();
         // 修改文件模型对象的值
-        FileModel fileModel = response.getData();
         fileModel.setDeleted(true);
         fileModel.setDateOfRecovery(LocalDate.now().plusDays(collectionDays));
         // 更新数据
-        return fileClientService.saveFile(fileModel);
+        return ServerResponse.createBySuccessWithData(fileClientService.saveFile(fileModel));
     }
 }

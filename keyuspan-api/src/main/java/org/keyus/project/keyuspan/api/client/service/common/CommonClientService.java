@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author keyus
  * @create 2019-07-29  下午2:37
  */
-@FeignClient(value = "keyuspan-common", fallbackFactory = CommonClientServiceFallbackFactory.class)
+@FeignClient(value = "keyuspan-common")
 public interface CommonClientService {
 
     @GetMapping("/create_text")
-    void createCapText () throws Throwable;
+    void createCapText ();
 }

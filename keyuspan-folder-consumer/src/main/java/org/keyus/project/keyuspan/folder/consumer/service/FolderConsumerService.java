@@ -4,6 +4,7 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
 import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
+import org.keyus.project.keyuspan.api.vo.FolderVO;
 
 /**
  * @author keyus
@@ -11,13 +12,13 @@ import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
  */
 public interface FolderConsumerService {
 
-    ServerResponse openFolderById (Long id, Member member);
+    ServerResponse <FolderMessageVO> openFolderById (Long id, Member member);
 
     ServerResponse <VirtualFolder> createFolder (Long id, String folderName, Member member);
 
     ServerResponse <VirtualFolder> createMainFolder (Long memberId);
 
-    ServerResponse <VirtualFolder> updateFolderName (Long id, String folderName, Member member);
+    ServerResponse <FolderVO> updateFolderName (Long id, String folderName, Member member);
 
     ServerResponse <FolderMessageVO> deleteFolder (Long id, Member member);
 }

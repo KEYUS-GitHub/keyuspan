@@ -1,9 +1,9 @@
 package org.keyus.project.keyuspan.file.provider.service;
 
 import org.keyus.project.keyuspan.api.po.FileModel;
-import org.keyus.project.keyuspan.api.util.ServerResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -13,18 +13,18 @@ import java.util.concurrent.ExecutionException;
  */
 public interface FileModelService {
 
-    ServerResponse<FileModel> findById (Long id);
+    Optional<FileModel> findById (Long id);
 
-    ServerResponse <List<FileModel>> findByIdIn (Iterable<Long> iterable);
+    List<FileModel> findByIdIn (Iterable<Long> iterable);
 
-    ServerResponse <FileModel> saveFile (FileModel fileModel);
+    FileModel saveFile (FileModel fileModel);
 
-    ServerResponse <List<FileModel>> saveFiles (List<FileModel> list);
+    List<FileModel> saveFiles (List<FileModel> list);
 
-    ServerResponse <List<FileModel>> findAll (FileModel fileModel);
+    List<FileModel> findAll (FileModel fileModel);
 
-    ServerResponse <List<FileModel>> getFilesByFolderId(Long id);
+    List<FileModel> getFilesByFolderId(Long id);
 
-    ServerResponse <List<FileModel>> deleteFilesInRecycleBin (Long memberId , HttpSession session) throws ExecutionException, InterruptedException;
+    List<FileModel> deleteFilesInRecycleBin (Long memberId , HttpSession session) throws ExecutionException, InterruptedException;
 
 }

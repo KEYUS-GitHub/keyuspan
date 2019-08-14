@@ -31,7 +31,7 @@ public class MemberConsumerServiceImpl implements MemberConsumerService {
 
     @Override
     public ServerResponse <List<Member>> getMembers() {
-        return memberClientService.getMembers();
+        return ServerResponse.createBySuccessWithData(memberClientService.getMembers());
     }
 
     @Override
@@ -41,24 +41,12 @@ public class MemberConsumerServiceImpl implements MemberConsumerService {
             // 构建查询对象
             Member check = new Member();
             check.setUsername(member.getUsername());
-            ServerResponse<Member> one = memberClientService.findOne(check);
-            if (ServerResponse.isError(one)) {
-                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SYSTEM_EXCEPTION.getMessage());
-            } else if (ServerResponse.isNullValue(one)) {
-                ServerResponse<Member> response = memberClientService.saveMember(member);
-                if (ServerResponse.isSuccess(response)) {
-                    Member save = response.getData();
-                    ServerResponse<VirtualFolder> serverResponse = folderClientService.createMainFolder(save.getId());
-                    if (ServerResponse.isSuccess(serverResponse)) {
-                        VirtualFolder virtualFolder = serverResponse.getData();
-                        save.setMainFolderId(virtualFolder.getId());
-                        return memberClientService.saveMember(save);
-                    } else {
-                        return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.MEMBER_REGISTER_FAIL.getMessage());
-                    }
-                } else {
-                    return response;
-                }
+            Member one = memberClientService.findOne(check);
+            if (Objects.isNull(one.getId())) {
+                Member save = memberClientService.saveMember(member);
+                VirtualFolder mainFolder = folderClientService.createMainFolder(save.getId());
+                save.setMainFolderId(mainFolder.getId());
+                return ServerResponse.createBySuccessWithData(memberClientService.saveMember(save));
             } else {
                 return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.USERNAME_REPEAT.getMessage());
             }
@@ -77,18 +65,13 @@ public class MemberConsumerServiceImpl implements MemberConsumerService {
         }
 
         // 校验成功，则查找用户名与密码匹配的记录
-        ServerResponse <Member> response = memberClientService.findOne(member);
-        if (ServerResponse.isSuccess(response)) {
-            // 用户名或密码错误，查无此记录，故而登录失败
-            if (ServerResponse.isNullValue(response)) {
-                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.USERNAME_OR_PASSWORD_ERROR.getMessage());
-            } else {
-                // 登录成功，登录信息存入session当中
-                session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), response.getData());
-                return response;
-            }
+        Member one = memberClientService.findOne(member);
+        if (Objects.isNull(one.getId())) {
+            // 登录成功，登录信息存入session当中
+            session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), one);
+            return ServerResponse.createBySuccessWithData(one);
         } else {
-            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.SYSTEM_EXCEPTION.getMessage());
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.USERNAME_OR_PASSWORD_ERROR.getMessage());
         }
     }
 }

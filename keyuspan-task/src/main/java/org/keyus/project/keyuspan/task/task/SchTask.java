@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -42,10 +43,8 @@ public class SchTask {
         ShareRecord record = ShareRecord.builder()
                 .dateOfInvalid(LocalDate.now())
                 .build();
-        ServerResponse<List<ShareRecord>> serverResponse = shareClientService.findAll(record);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            shareClientService.deleteInBatch(serverResponse.getData());
-        }
+        List<ShareRecord> all = shareClientService.findAll(record);
+        shareClientService.deleteInBatch(all);
     }
 
     // 每天凌晨3点的时候，删除数据库中的一些记录
@@ -54,11 +53,16 @@ public class SchTask {
         // 并行操作
         executor.execute(folderClientService::deleteFoldersInRecycleBin);
         // 查询所有会员的ID值
-        ServerResponse<List<Long>> serverResponse = memberClientService.getMemberIdList();
-        List<Long> ids = serverResponse.getData();
+        List<Long> ids = memberClientService.getMemberIdList();
 
         for (Long id : ids) {
-            executor.execute(() -> fileClientService.deleteFilesInRecycleBin(id));
+            executor.execute(() -> {
+                try {
+                    fileClientService.deleteFilesInRecycleBin(id);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 }

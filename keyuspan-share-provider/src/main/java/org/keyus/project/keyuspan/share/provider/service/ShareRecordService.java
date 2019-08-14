@@ -1,7 +1,6 @@
 package org.keyus.project.keyuspan.share.provider.service;
 
 import org.keyus.project.keyuspan.api.po.ShareRecord;
-import org.keyus.project.keyuspan.api.util.ServerResponse;
 
 import java.util.List;
 
@@ -11,13 +10,13 @@ import java.util.List;
  */
 public interface ShareRecordService {
 
-    ServerResponse<ShareRecord> save (ShareRecord record);
+    ShareRecord save (ShareRecord record);
 
-    ServerResponse <List<ShareRecord>> findAll (ShareRecord record);
+    List<ShareRecord> findAll (ShareRecord record);
 
-    ServerResponse <ShareRecord> findByUrl (String url);
+    ShareRecord findByUrl (String url);
 
-    ServerResponse <ShareRecord> findById (Long id);
+    ShareRecord findById (Long id);
 
     void deleteInBatch (Iterable<ShareRecord> records);
 }

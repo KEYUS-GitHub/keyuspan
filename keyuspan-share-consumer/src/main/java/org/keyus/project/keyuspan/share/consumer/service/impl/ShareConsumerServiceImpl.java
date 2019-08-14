@@ -12,6 +12,7 @@ import org.keyus.project.keyuspan.api.po.Member;
 import org.keyus.project.keyuspan.api.po.ShareRecord;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
 import org.keyus.project.keyuspan.api.util.ServerResponse;
+import org.keyus.project.keyuspan.api.vo.FileModelVO;
 import org.keyus.project.keyuspan.api.vo.FolderMessageVO;
 import org.keyus.project.keyuspan.share.consumer.service.ShareConsumerService;
 import org.springframework.stereotype.Service;
@@ -63,23 +64,18 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
             builder.dateOfInvalid(LocalDate.now().plusDays(days));
         }
         ShareRecord record = builder.build();
-        return shareClientService.save(record);
+        return ServerResponse.createBySuccessWithData(shareClientService.save(record));
     }
 
     @Override
-    public ServerResponse <FileModel> saveFileByShare (Long fileId, Long folderId, Member member) {
-        ServerResponse<FileModel> serverResponse = fileClientService.findById(fileId);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            FileModel fileModel = serverResponse.getData();
-            FileModel.FileModelBuilder builder = FileModel.builder();
-            FileModel newFileModel = builder.memberId(member.getId()).folderId(folderId)
-                    .fileExtension(fileModel.getFileExtension())
-                    .contentType(fileModel.getContentType()).fileName(fileModel.getFileName())
-                    .size(fileModel.getSize()).uri(fileModel.getUri()).build();
-            return fileClientService.saveFile(newFileModel);
-        } else {
-            return serverResponse;
-        }
+    public ServerResponse <FileModelVO> saveFileByShare (Long fileId, Long folderId, Member member) {
+        FileModel fileModel = fileClientService.findById(fileId);
+        FileModel.FileModelBuilder builder = FileModel.builder();
+        FileModel newFileModel = builder.memberId(member.getId()).folderId(folderId)
+                .fileExtension(fileModel.getFileExtension())
+                .contentType(fileModel.getContentType()).fileName(fileModel.getFileName())
+                .size(fileModel.getSize()).uri(fileModel.getUri()).build();
+        return ServerResponse.createBySuccessWithData(FileModelVO.getInstance(fileClientService.saveFile(newFileModel)));
     }
 
     @Override
@@ -97,7 +93,7 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
             builder.dateOfInvalid(LocalDate.now().plusDays(days));
         }
         ShareRecord record = builder.build();
-        return shareClientService.save(record);
+        return ServerResponse.createBySuccessWithData(shareClientService.save(record));
     }
 
     @Override
@@ -108,51 +104,42 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
 
     @Override
     public ServerResponse openShare (String url, String capText) throws InterruptedException {
-        ServerResponse<ShareRecord> response = shareClientService.findByUrl(url);
-        if (ServerResponse.isSuccess(response)) {
-            ShareRecord record = response.getData();
-            if (Objects.equals(record.getCapText(), capText)) {
-                // 递归查询 并且要求并发多线程查询
-                final CountDownLatch latch = new CountDownLatch(2);
-                final List<FileModel> fileModels = new ArrayList<>();
-                final List<VirtualFolder> folders = new ArrayList<>();
-                executor.execute(() -> {
-                    String[] filesIds = record.getFilesIds().split(",");
-                    List<Long> fileIdList = new ArrayList<>(filesIds.length);
-                    for (String id : filesIds) {
-                        fileIdList.add(Long.valueOf(id));
-                    }
-                    ServerResponse<List<FileModel>> serverResponse = fileClientService.findByIdIn(fileIdList);
-                    if (ServerResponse.isSuccess(serverResponse)) {
-                        fileModels.addAll(serverResponse.getData());
-                    }
-                    // 查询结束，减一
-                    latch.countDown();
-                });
+        ShareRecord record = shareClientService.findByUrl(url);
+        if (Objects.equals(record.getCapText(), capText)) {
+            // 递归查询 并且要求并发多线程查询
+            final CountDownLatch latch = new CountDownLatch(2);
+            final List<FileModel> fileModels = new ArrayList<>();
+            final List<VirtualFolder> folders = new ArrayList<>();
+            executor.execute(() -> {
+                String[] filesIds = record.getFilesIds().split(",");
+                List<Long> fileIdList = new ArrayList<>(filesIds.length);
+                for (String id : filesIds) {
+                    fileIdList.add(Long.valueOf(id));
+                }
+                List<FileModel> fileModelList = fileClientService.findByIdIn(fileIdList);
+                fileModels.addAll(fileModelList);
+                // 查询结束，减一
+                latch.countDown();
+            });
 
-                executor.execute(() -> {
-                    String[] foldersIds = record.getFoldersIds().split(",");
-                    List<Long> folderIdList = new ArrayList<>(foldersIds.length);
-                    for (String id : foldersIds) {
-                        folderIdList.add(Long.valueOf(id));
-                    }
-                    //
-                    ServerResponse<List<VirtualFolder>> serverResponse = folderClientService.findByIdIn(folderIdList);
-                    if (ServerResponse.isSuccess(serverResponse)) {
-                        folders.addAll(serverResponse.getData());
-                    }
-                    // 查询结束，减一
-                    latch.countDown();
-                });
+            executor.execute(() -> {
+                String[] foldersIds = record.getFoldersIds().split(",");
+                List<Long> folderIdList = new ArrayList<>(foldersIds.length);
+                for (String id : foldersIds) {
+                    folderIdList.add(Long.valueOf(id));
+                }
+                //
+                List<VirtualFolder> virtualFolderList = folderClientService.findByIdIn(folderIdList);
+                folders.addAll(virtualFolderList);
+                // 查询结束，减一
+                latch.countDown();
+            });
 
-                // 等待操作完成
-                latch.await();
-                return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(null, null, folders, fileModels));
-            } else {
-                return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.CAPTCHA_CHECK_ERROR.getMessage());
-            }
+            // 等待操作完成
+            latch.await();
+            return ServerResponse.createBySuccessWithData(FolderMessageVO.getInstance(null, null, folders, fileModels));
         } else {
-            return response;
+            return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.CAPTCHA_CHECK_ERROR.getMessage());
         }
     }
 
@@ -162,55 +149,45 @@ public class ShareConsumerServiceImpl implements ShareConsumerService {
             return;
         }
 
-        ServerResponse<VirtualFolder> serverResponse = folderClientService.findById(folderId);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            VirtualFolder folder = serverResponse.getData();
-            VirtualFolder save = VirtualFolder.builder().memberId(memberId)
-                    .fatherFolderId(fatherFolderId).deleted(false)
-                    .updateDate(LocalDate.now())
-                    .virtualFolderName(folder.getVirtualFolderName())
+        VirtualFolder folder = folderClientService.findById(folderId);
+        VirtualFolder save = VirtualFolder.builder().memberId(memberId)
+                .fatherFolderId(fatherFolderId).deleted(false)
+                .updateDate(LocalDate.now())
+                .virtualFolderName(folder.getVirtualFolderName())
+                .build();
+        VirtualFolder fatherFolder = folderClientService.save(save);
+
+        executor.execute(() -> {
+            FileModel selectFile = FileModel.builder()
+                    .folderId(folderId)
+                    .deleted(false)
                     .build();
-            ServerResponse<VirtualFolder> response = folderClientService.save(save);
-            VirtualFolder fatherFolder = response.getData();
 
-            executor.execute(() -> {
-                FileModel selectFile = FileModel.builder()
-                        .folderId(folderId)
-                        .deleted(false)
-                        .build();
+            List<FileModel> fileModelList = fileClientService.findAll(selectFile);
+            for (FileModel fm : fileModelList) {
+                fm.setFolderId(fatherFolder.getId());
+                fm.setId(null);
+                fm.setDeleted(false);
+                fm.setMemberId(memberId);
+            }
+            fileClientService.saveFiles(fileModelList);
+        });
 
-                ServerResponse<List<FileModel>> fileAll = fileClientService.findAll(selectFile);
-                if (ServerResponse.isSuccess(fileAll)) {
-                    List<FileModel> allData = fileAll.getData();
-                    for (FileModel fm : allData) {
-                        fm.setFolderId(fatherFolder.getId());
-                        fm.setId(null);
-                        fm.setDeleted(false);
-                        fm.setMemberId(memberId);
-                    }
-                    fileClientService.saveFiles(allData);
-                }
-            });
+        executor.execute(() -> {
+            VirtualFolder selectFolder = VirtualFolder.builder()
+                    .fatherFolderId(folderId)
+                    .deleted(false)
+                    .build();
 
-            executor.execute(() -> {
-                VirtualFolder selectFolder = VirtualFolder.builder()
-                        .fatherFolderId(folderId)
-                        .deleted(false)
-                        .build();
-
-                ServerResponse<List<VirtualFolder>> all = folderClientService.findAll(selectFolder);
-                if (ServerResponse.isSuccess(all)) {
-                    List<VirtualFolder> allData = all.getData();
-                    for (VirtualFolder vf : allData) {
-                        vf.setFatherFolderId(fatherFolder.getId());
-                        vf.setId(null);
-                        vf.setDeleted(false);
-                        vf.setMemberId(memberId);
-                        executor.execute(() -> saveFolderUseShare(vf.getId(), vf.getFatherFolderId(), memberId));
-                    }
-                    folderClientService.saveAll(allData);
-                }
-            });
-        }
+            List<VirtualFolder> allData = folderClientService.findAll(selectFolder);
+            for (VirtualFolder vf : allData) {
+                vf.setFatherFolderId(fatherFolder.getId());
+                vf.setId(null);
+                vf.setDeleted(false);
+                vf.setMemberId(memberId);
+                executor.execute(() -> saveFolderUseShare(vf.getId(), vf.getFatherFolderId(), memberId));
+            }
+            folderClientService.saveAll(allData);
+        });
     }
 }
