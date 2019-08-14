@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.file.provider.service.impl;
 
+import com.codingapi.tx.annotation.ITxTransaction;
 import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.client.service.member.MemberClientService;
@@ -25,7 +26,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Service
 @AllArgsConstructor
-public class FileModelServiceImpl implements FileModelService {
+public class FileModelServiceImpl implements FileModelService, ITxTransaction {
 
     private final FileModelDao fileModelDao;
 

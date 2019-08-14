@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.member.provider.service.impl;
 
+import com.codingapi.tx.annotation.ITxTransaction;
 import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.po.Member;
@@ -19,7 +20,7 @@ import java.util.Optional;
  */
 @Service
 @AllArgsConstructor
-public class MemberServiceImpl implements MemberService {
+public class MemberServiceImpl implements MemberService, ITxTransaction {
 
     private final MemberDao memberDao;
 

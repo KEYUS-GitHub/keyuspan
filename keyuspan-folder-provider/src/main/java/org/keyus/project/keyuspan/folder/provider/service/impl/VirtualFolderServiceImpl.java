@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.folder.provider.service.impl;
 
+import com.codingapi.tx.annotation.ITxTransaction;
 import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
@@ -18,7 +19,7 @@ import java.util.*;
  */
 @Service
 @AllArgsConstructor
-public class VirtualFolderServiceImpl implements VirtualFolderService {
+public class VirtualFolderServiceImpl implements VirtualFolderService, ITxTransaction {
 
     private final VirtualFileFolderDao virtualFileFolderDao;
 

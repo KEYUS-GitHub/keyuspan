@@ -1,5 +1,6 @@
 package org.keyus.project.keyuspan.share.provider.service.impl;
 
+import com.codingapi.tx.annotation.ITxTransaction;
 import com.codingapi.tx.annotation.TxTransaction;
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.po.ShareRecord;
@@ -18,7 +19,7 @@ import java.util.Optional;
  */
 @Service
 @AllArgsConstructor
-public class ShareRecordServiceImpl implements ShareRecordService {
+public class ShareRecordServiceImpl implements ShareRecordService, ITxTransaction {
 
     private final ShareRecordDao shareRecordDao;
 
