@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,12 +38,13 @@ public class FileConsumerServiceImpl implements FileConsumerService {
 
     @Override
     public ServerResponse<FileModel> uploadFile(MultipartFile file, Member member, Long folderId) throws Throwable {
-        String uri = fileClientService.uploadFile(file);
-        FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri, folderId);
-        double fileSize = fileModel.getSize() / 1024;
+        // 计算MB的值
+        double fileSize = (file.getSize() / 1024) / 1024;
         if (fileSize + member.getUsedStorageSpace() > member.getTotalStorageSpace()) {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.OUT_OF_MEMBER_STORAGE_SPACE.getMessage());
         }
+        String uri = fileClientService.uploadFile(file);
+        FileModel fileModel = FileModelUtil.changeToFileModel(member.getId(), file, uri, folderId);
         // 否则
         FileModel save = fileClientService.saveFile(fileModel);
         // 计算已经使用的size，单位是KB
@@ -57,19 +57,19 @@ public class FileConsumerServiceImpl implements FileConsumerService {
     @Override
     public ServerResponse <List<FileModel>> uploadFiles (MultipartFile[] files, Long folderId, Member member) throws Throwable {
         List<MultipartFile> list = new ArrayList<>(Arrays.asList(files));
-        String[] uris = fileClientService.uploadFiles(list);
-        List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris, folderId);
-
         // 计算空间总和
         double fileSize = 0.0;
-        for (FileModel fileModel : fileModels) {
-            fileSize += (fileModel.getSize() / 1024);
+        for (MultipartFile file : list) {
+            fileSize += (file.getSize() / 1024) / 1024;
         }
 
+        // 判断是否超出存储范围
         if (fileSize + member.getUsedStorageSpace() > member.getTotalStorageSpace()) {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.OUT_OF_MEMBER_STORAGE_SPACE.getMessage());
         }
 
+        String[] uris = fileClientService.uploadFiles(list);
+        List<FileModel> fileModels = FileModelUtil.changeToFileModels(member.getId(), list, uris, folderId);
         return ServerResponse.createBySuccessWithData(fileClientService.saveFiles(fileModels));
     }
 

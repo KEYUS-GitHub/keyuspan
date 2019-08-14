@@ -75,11 +75,9 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
     @Override
     public ServerResponse <FolderVO> updateFolderName (Long id, String folderName, Member member) {
         VirtualFolder virtualFolder = folderClientService.findById(id);
-
         if (!Objects.isNull(virtualFolder) && VirtualFolderUtil.isBelongToThisMember(member, virtualFolder)) {
             virtualFolder.setVirtualFolderName(folderName);
             virtualFolder.setUpdateDate(LocalDate.now());
-
             // 执行更新
             return ServerResponse.createBySuccessWithData(FolderVO.getInstance(folderClientService.save(virtualFolder)));
         } else {
@@ -89,14 +87,11 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
 
     @Override
     public ServerResponse <FolderMessageVO> deleteFolder (Long id, Member member) {
-
         List<VirtualFolder> virtualFolders = new ArrayList<>();
         // 获取待删除的虚拟文件夹
         getVirtualFolderForDelete(virtualFolders, id);
-
         // 回收站回收这是文件夹和文件的日期
         LocalDate collectDate = LocalDate.now().plusDays(member.getGarbageCollectionDays());
-
         List<FileModel> fileModels = new ArrayList<>();
         for (VirtualFolder folder : virtualFolders) {
             getFileModelForDelete(fileModels, folder.getId());

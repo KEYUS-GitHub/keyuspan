@@ -57,16 +57,14 @@ public class MemberConsumerServiceImpl implements MemberConsumerService {
 
     @Override
     public ServerResponse <Member> login(HttpSession session, Member member, String key) {
-
         // 获取并校验验证码的值
         String capText = (String) session.getAttribute(SessionAttributeNameEnum.CAPTCHA_FOR_IMAGE.getName());
         if (!Objects.equals(key, capText)) {
             return ServerResponse.createByErrorWithMessage(ErrorMessageEnum.CAPTCHA_CHECK_ERROR.getMessage());
         }
-
         // 校验成功，则查找用户名与密码匹配的记录
         Member one = memberClientService.findOne(member);
-        if (Objects.isNull(one.getId())) {
+        if (!Objects.isNull(one.getId())) {
             // 登录成功，登录信息存入session当中
             session.setAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName(), one);
             return ServerResponse.createBySuccessWithData(one);
