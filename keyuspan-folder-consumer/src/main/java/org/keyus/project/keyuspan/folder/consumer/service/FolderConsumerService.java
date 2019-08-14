@@ -16,8 +16,6 @@ public interface FolderConsumerService {
 
     ServerResponse <VirtualFolder> createFolder (Long id, String folderName, Member member);
 
-    ServerResponse <VirtualFolder> createMainFolder (Long memberId);
-
     ServerResponse <FolderVO> updateFolderName (Long id, String folderName, Member member);
 
     ServerResponse <FolderMessageVO> deleteFolder (Long id, Member member);

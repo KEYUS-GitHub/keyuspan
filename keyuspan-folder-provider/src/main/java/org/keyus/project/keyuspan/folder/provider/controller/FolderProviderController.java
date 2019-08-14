@@ -2,6 +2,7 @@ package org.keyus.project.keyuspan.folder.provider.controller;
 
 import lombok.AllArgsConstructor;
 import org.keyus.project.keyuspan.api.po.VirtualFolder;
+import org.keyus.project.keyuspan.api.util.VirtualFolderUtil;
 import org.keyus.project.keyuspan.folder.provider.service.VirtualFolderService;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,5 +51,10 @@ public class FolderProviderController {
     @PostMapping("/get_virtual_path")
     public String getVirtualPath(@RequestBody Long id) {
         return virtualFolderService.getVirtualPath(id);
+    }
+
+    @PostMapping("/create_main_folder")
+    public VirtualFolder createMainFolder (@RequestBody Long memberId) {
+        return virtualFolderService.save(VirtualFolderUtil.createMainVirtualFolder(memberId));
     }
 }

@@ -71,13 +71,6 @@ public class FolderConsumerServiceImpl implements FolderConsumerService {
     @TxTransaction(isStart = true)
     @Transactional
     @Override
-    public ServerResponse <VirtualFolder> createMainFolder (Long memberId) {
-        return ServerResponse.createBySuccessWithData(folderClientService.save(VirtualFolderUtil.createMainVirtualFolder(memberId)));
-    }
-
-    @TxTransaction(isStart = true)
-    @Transactional
-    @Override
     public ServerResponse <FolderVO> updateFolderName (Long id, String folderName, Member member) {
         VirtualFolder virtualFolder = folderClientService.findById(id);
         if (!Objects.isNull(virtualFolder) && VirtualFolderUtil.isBelongToThisMember(member, virtualFolder)) {

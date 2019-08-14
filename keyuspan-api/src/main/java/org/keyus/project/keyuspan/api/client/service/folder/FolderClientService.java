@@ -35,5 +35,6 @@ public interface FolderClientService {
     @PostMapping("/get_virtual_path")
     String getVirtualPath(@RequestBody Long id);
 
-    VirtualFolder createMainFolder (@RequestBody Long id);
+    @PostMapping("/create_main_folder")
+    VirtualFolder createMainFolder (@RequestBody Long memberId);
 }

@@ -40,15 +40,6 @@ public class FolderConsumerController {
         return serverResponse;
     }
 
-    @PostMapping("/create_main_folder")
-    public ServerResponse createMainFolder (@RequestParam("memberId") Long memberId) {
-        ServerResponse<VirtualFolder> serverResponse = folderConsumerService.createMainFolder(memberId);
-        if (ServerResponse.isSuccess(serverResponse)) {
-            return ServerResponse.createBySuccessWithData(FolderVO.getInstance(serverResponse.getData()));
-        }
-        return serverResponse;
-    }
-
     @PostMapping("/update_folder_name")
     public ServerResponse <FolderVO> updateFolderName (@RequestParam("id") Long id, @RequestParam("folderName") String folderName, HttpSession session) {
         Member member = (Member) session.getAttribute(SessionAttributeNameEnum.LOGIN_MEMBER.getName());
