@@ -9,9 +9,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: keyus
+    username: root
     password: keyus
-    url: jdbc:mysql://localhost:3306/keyuspan
+    url: jdbc:mysql://localhost:4000/keyuspan # 使用TiDB代替MySQL
     dbcp2:
       min-idle: 5                                           # 数据库连接池的最小维持连接数
       initial-size: 5                                       # 初始化连接数
@@ -48,7 +48,7 @@ info:
 # txmanager地址
 tm:
   manager:
-    url: http://127.0.0.1:8899/tx/manager/
+    url: http://127.0.0.1:8070/tx/manager/
 
 logging:
   level:
